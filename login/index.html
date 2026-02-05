@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <title>Login | Omnia Produções</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body class="login-page">
+
+  <header class="navbar login-navbar">
+    <div class="nav-container">
+      <h1 class="logo">
+        <a href="../index.html#top" aria-label="Voltar ao início">
+          <img src="../img/lente logo omnia.png" alt="Logotipo Omnia Produções">
+        </a>
+      </h1>
+    </div>
+  </header>
+
+  <div class="login-bg" aria-hidden="true"></div>
+
+  <main class="login-shell">
+    <section class="login-brand">
+      <a class="login-logo" href="../index.html#top" aria-label="Voltar ao site">
+        <img src="../img/lente logo omnia.png" alt="Logotipo Omnia Produções">
+      </a>
+
+      <p class="login-kicker">Omnia Produções</p>
+      <h1>SPONSOR SEASON</h1>
+      <p class="login-lead">
+        Acesse sua área com segurança e continue acompanhando projetos,
+        entregas e atualizações da sua produção.
+      </p>
+
+      <ul class="login-highlights">
+        <li>Dashboard com status de projetos</li>
+        <li>Arquivos e entregas organizadas</li>
+        <li>Atendimento rápido e direto</li>
+      </ul>
+
+      <a class="login-back" href="../index.html#top">Voltar ao site</a>
+    </section>
+
+    <section class="login-card">
+      <div class="login-card-header">
+        <h2>Entrar</h2>
+        <p>Use seu e-mail corporativo para continuar.</p>
+      </div>
+
+      <form class="login-form" id="loginForm" novalidate>
+        <div class="login-field">
+          <label for="login-email">Usuário ou e-mail</label>
+          <input
+            id="login-email"
+            name="email"
+            type="text"
+            placeholder="jvdiamond97 ou voce@empresa.com"
+            autocomplete="username"
+            required
+          >
+        </div>
+
+        <div class="login-field">
+          <label for="login-password">Senha</label>
+          <input
+            id="login-password"
+            name="password"
+            type="password"
+            placeholder="Digite sua senha"
+            autocomplete="current-password"
+            required
+          >
+        </div>
+
+        <p class="login-error" id="loginError" role="alert" aria-live="polite"></p>
+
+        <div class="login-options">
+          <label class="login-check">
+            <input type="checkbox" name="remember" checked>
+            <span>Lembrar-me</span>
+          </label>
+
+          <a class="login-link" href="#">Esqueci minha senha</a>
+        </div>
+
+        <button class="login-btn" type="submit">Entrar</button>
+
+        <div class="login-divider">
+          <span>ou</span>
+        </div>
+
+        <button class="login-alt" type="button">Continuar com Google</button>
+        <button class="login-alt" type="button">Continuar com Apple</button>
+
+        <p class="login-note">
+          Ainda não tem acesso?
+          <a class="login-link" href="../index.html#contact">Fale com a Omnia</a>
+        </p>
+      </form>
+    </section>
+  </main>
+
+  <script src="login.js" defer></script>
+</body>
+</html>

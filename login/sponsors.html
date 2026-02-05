@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sponsors | Omnia Producoes</title>
+  <meta name="description" content="Programa de patrocinio Omnia 10 anos com atletas e DJs da Sponsor Season.">
+  <link rel="preload" as="video" href="../videos/RUN_-_Inspirational_Running_Video_HD_720P.mp4" type="video/mp4">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body class="sponsor-page" id="top">
+
+  <header class="navbar sponsor-navbar">
+    <div class="nav-container">
+      <h1 class="logo">
+        <a href="../index.html#top" aria-label="Voltar ao site Omnia">
+          <img src="../img/lente logo omnia.png" alt="Logotipo Omnia Producoes">
+        </a>
+      </h1>
+      <div class="sponsor-top-player sponsor-mini-player" aria-label="Player de musica dos sponsors">
+        <div class="top-player-left">
+          <span class="top-player-cover" aria-hidden="true" data-default-cover="../img/capas/Capa Album.jpg"></span>
+          <div class="top-player-text">
+            <span class="top-player-label">Agora tocando</span>
+            <strong id="topPlayerTitle">Selecione uma faixa</strong>
+            <span id="topPlayerArtist">Omnia Sponsors</span>
+          </div>
+        </div>
+        <div class="top-player-center">
+          <div class="top-player-controls">
+            <button class="top-player-btn" id="topPrev" type="button" aria-label="Faixa anterior">Anterior</button>
+            <button class="top-player-btn is-play" id="topPlay" type="button" aria-label="Tocar ou pausar">Tocar</button>
+            <button class="top-player-btn" id="topNext" type="button" aria-label="Proxima faixa">Proxima</button>
+          </div>
+          <div class="top-player-progress" role="group" aria-label="Progresso da faixa">
+            <span id="topCurrent">0:00</span>
+            <div class="top-player-track">
+              <span id="topFill"></span>
+            </div>
+            <span id="topTotal">0:00</span>
+          </div>
+        </div>
+        <div class="top-player-right">
+          <span class="top-player-volume-icon" aria-hidden="true"></span>
+          <input
+            class="top-player-volume"
+            id="topVolume"
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value="0.8"
+            aria-label="Volume"
+          >
+        </div>
+      </div>
+      <button class="menu-btn" onclick="openMenu()" aria-label="Abrir menu">&#9776;</button>
+    </div>
+  </header>
+
+  <aside id="sideMenu" class="side-menu">
+    <button class="close-btn" onclick="closeMenu()" aria-label="Fechar menu">&times;</button>
+    <nav class="side-nav">
+      <a href="#top" onclick="closeMenu()">Inicio</a>
+      <a href="#sponsors" onclick="closeMenu()">Patrocinados</a>
+      <a href="#playlist" onclick="closeMenu()">Playlist</a>
+      <a href="../index.html#contact" onclick="closeMenu()">Contato</a>
+      <a href="dashboard.html" onclick="closeMenu()">Voltar ao painel</a>
+    </nav>
+    <a class="menu-secret" href="../index.html#top" aria-label="Voltar ao site Omnia">
+      <img src="../img/lente logo omnia.png" alt="Omnia Producoes">
+    </a>
+  </aside>
+
+  <section class="sponsor-hero-video" aria-label="Video de abertura">
+    <video
+      class="sponsor-hero-media"
+      poster="../img/foto capa.png"
+      autoplay
+      muted
+      loop
+      playsinline
+      webkit-playsinline
+      fetchpriority="high"
+      preload="auto"
+    >
+      <source src="../videos/RUN_-_Inspirational_Running_Video_HD_720P.mp4" type="video/mp4">
+    </video>
+  </section>
+
+  <main class="sponsor-shell">
+    <section class="sponsor-countdown" aria-label="Contagem regressiva para 10 anos da Omnia">
+      <p class="countdown-label">Contagem regressiva</p>
+      <h3>10 anos da Omnia</h3>
+      <div class="countdown-grid" data-countdown data-target="2026-07-09T00:00:00">
+        <div class="countdown-item">
+          <span class="countdown-value" data-days>00</span>
+          <span class="countdown-unit">Dias</span>
+        </div>
+        <div class="countdown-item">
+          <span class="countdown-value" data-hours>00</span>
+          <span class="countdown-unit">Horas</span>
+        </div>
+        <div class="countdown-item">
+          <span class="countdown-value" data-minutes>00</span>
+          <span class="countdown-unit">Minutos</span>
+        </div>
+        <div class="countdown-item">
+          <span class="countdown-value" data-seconds>00</span>
+          <span class="countdown-unit">Segundos</span>
+        </div>
+      </div>
+      <p class="countdown-note" id="countdownNote">Faltam alguns instantes para o aniversario.</p>
+    </section>
+
+    <section class="sponsor-hero-content-section">
+      <div class="sponsor-hero-inner">
+        <div class="sponsor-hero-content">
+          <p class="sponsor-kicker">Omnia 10 anos</p>
+          <h1>Sponsor Season</h1>
+          <p class="sponsor-lead">
+            Uma temporada de aniversario dedicada aos talentos que movem a cultura.
+            Atletas e DJs patrocinados pela Omnia com visibilidade, producao audiovisual
+            e conteudo exclusivo.
+          </p>
+          <div class="sponsor-hero-actions">
+            <a class="dashboard-cta" href="#sponsors">Conhecer os sponsors</a>
+            <a class="dashboard-ghost" href="#playlist">Ouvir a playlist</a>
+          </div>
+          <div class="sponsor-hero-tags">
+            <span>Atletas</span>
+            <span>DJs</span>
+            <span>Omnia 10 anos</span>
+            <span>Conteudo original</span>
+          </div>
+        </div>
+
+        <div class="sponsor-hero-card">
+          <span class="sponsor-badge">Temporada 2026</span>
+          <h3>O que o programa entrega</h3>
+          <ul class="sponsor-list">
+            <li>Patrocinio direto para producao, viagens e equipamentos.</li>
+            <li>Ensaios, clipes e conteudos para redes sociais.</li>
+            <li>Divulgacao do aniversario da Omnia e dos sponsors.</li>
+            <li>Mentoria criativa e acompanhamento de imagem.</li>
+          </ul>
+          <div class="sponsor-hero-stats">
+            <div>
+              <p class="stat-label">Vagas</p>
+              <p class="stat-value">12</p>
+            </div>
+            <div>
+              <p class="stat-label">DJs</p>
+              <p class="stat-value">6</p>
+            </div>
+            <div>
+              <p class="stat-label">Atletas</p>
+              <p class="stat-value">6</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sponsor-marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span>Omnia 10 anos</span>
+        <span>Sponsor Season</span>
+        <span>Atletas e DJs</span>
+        <span>Conteudo original</span>
+        <span>Omnia 10 anos</span>
+        <span>Sponsor Season</span>
+        <span>Atletas e DJs</span>
+        <span>Conteudo original</span>
+      </div>
+    </section>
+
+    <section class="sponsor-highlights">
+      <article class="sponsor-highlight-card">
+        <p class="highlight-kicker">Celebracao</p>
+        <h3>10 anos de impacto</h3>
+        <p>
+          A Omnia celebra uma decada contando historias e agora abre espaco
+          para quem inspira o publico com performance e musica.
+        </p>
+      </article>
+      <article class="sponsor-highlight-card">
+        <p class="highlight-kicker">Visibilidade</p>
+        <h3>Campanhas e midia</h3>
+        <p>
+          Cada sponsor recebe campanha dedicada, foto e video profissional,
+          alem de divulgacao em eventos e redes sociais.
+        </p>
+      </article>
+      <article class="sponsor-highlight-card">
+        <p class="highlight-kicker">Comunidade</p>
+        <h3>Conexao real</h3>
+        <p>
+          Criamos encontros entre artistas, atletas e marcas para amplificar
+          projetos com autenticidade e alcance.
+        </p>
+      </article>
+    </section>
+
+    <section class="sponsor-featured" id="featured">
+      <div class="sponsor-profiles-header">
+        <div>
+          <p class="sponsor-kicker">Destaques</p>
+          <h2>Sponsors em destaque</h2>
+        </div>
+        <div class="featured-actions">
+          <button class="carousel-btn" type="button" data-carousel="prev" aria-label="Voltar destaques">‹</button>
+          <button class="carousel-btn" type="button" data-carousel="next" aria-label="Avancar destaques">›</button>
+        </div>
+      </div>
+      <div class="featured-carousel" id="featuredCarousel">
+        <div class="featured-track" id="featuredTrack"></div>
+      </div>
+    </section>
+
+    <section class="sponsor-timeline" id="timeline">
+      <div class="sponsor-profiles-header">
+        <div>
+          <p class="sponsor-kicker">Linha do tempo</p>
+          <h2>10 anos de historia Omnia</h2>
+        </div>
+        <p class="sponsor-sub">
+          Marcos que transformaram a Omnia em referencia audiovisual e cultural.
+        </p>
+      </div>
+      <div class="timeline-track" id="timelineTrack"></div>
+    </section>
+
+    <section class="sponsor-profiles" id="sponsors">
+      <div class="sponsor-profiles-header">
+        <div>
+          <p class="sponsor-kicker">Patrocinados</p>
+          <h2>Perfis dos sponsors</h2>
+        </div>
+        <p class="sponsor-sub">
+          Abaixo estao alguns perfis exemplo. Substitua as fotos e textos pelos
+          atletas e DJs confirmados desta temporada.
+        </p>
+      </div>
+
+      <div class="sponsor-grid" id="sponsorGrid"></div>
+    </section>
+
+    <section class="sponsor-player-section" id="playlist">
+      <div class="sponsor-player-header">
+        <div>
+          <p class="sponsor-kicker">Mini Spotify</p>
+          <h2>Playlist Omnia 10 anos</h2>
+        </div>
+        <p class="sponsor-sub">
+          Substitua as faixas abaixo pelos arquivos de audio que voce vai subir.
+          Basta trocar o caminho em cada faixa.
+        </p>
+      </div>
+
+      <div class="sponsor-player">
+        <div class="album-panel">
+          <div class="album-art">
+            <img src="../img/capas/Capa Album.jpg" alt="Capa do album Omnia 10 anos">
+          </div>
+          <div class="album-meta">
+            <p class="album-label">Album oficial</p>
+            <h3>Celebracao Sponsor Season</h3>
+            <p class="album-sub">DJs Omnia + convidados especiais</p>
+            <div class="album-tags">
+              <span>Afro</span>
+              <span>House</span>
+              <span>Hits 2026</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tracklist">
+          <div class="tracklist-head">
+            <span>#</span>
+            <span>Faixa</span>
+            <span>Tempo</span>
+          </div>
+
+          <button class="track" type="button" data-track data-src="../audio/2TWOBOYZ - ENERGY (ELECTRONICSOUL) 2025.mp3" data-title="ENERGY (ELECTRONICSOUL) 2025" data-artist="2TWOBOYZ" data-cover="../img/capas/Capa Album.jpg">
+            <span class="track-index">01</span>
+            <span class="track-info">
+              <strong>ENERGY (ELECTRONICSOUL) 2025</strong>
+              <small>2TWOBOYZ</small>
+            </span>
+            <span class="track-duration">0:00</span>
+          </button>
+
+          <button class="track" type="button" data-track data-src="../audio/2TWOBOYZ - noite clara remix.mp3" data-title="noite clara remix" data-artist="2TWOBOYZ" data-cover="../img/capas/Capa Album.jpg">
+            <span class="track-index">02</span>
+            <span class="track-info">
+              <strong>noite clara remix</strong>
+              <small>2TWOBOYZ</small>
+            </span>
+            <span class="track-duration">0:00</span>
+          </button>
+
+          <button class="track" type="button" data-track data-src="../audio/2TWOBOYZ - NORMALMENTE X8 (ORIGINAL MIX) 2025.mp3" data-title="NORMALMENTE X8 (ORIGINAL MIX) 2025" data-artist="2TWOBOYZ" data-cover="../img/capas/Capa Album.jpg">
+            <span class="track-index">03</span>
+            <span class="track-info">
+              <strong>NORMALMENTE X8 (ORIGINAL MIX) 2025</strong>
+              <small>2TWOBOYZ</small>
+            </span>
+            <span class="track-duration">0:00</span>
+          </button>
+
+          <button class="track" type="button" data-track data-src="../audio/2TWOBOYZ - PURKUS remix.mp3" data-title="PURKUS remix" data-artist="2TWOBOYZ" data-cover="../img/capas/Capa Album.jpg">
+            <span class="track-index">04</span>
+            <span class="track-info">
+              <strong>PURKUS remix</strong>
+              <small>2TWOBOYZ</small>
+            </span>
+            <span class="track-duration">0:00</span>
+          </button>
+
+          <button class="track" type="button" data-track data-src="../audio/2TWOBOYZ - Thriller AgressivV remix 2025 wav.mp3" data-title="Thriller AgressivV remix 2025 wav" data-artist="2TWOBOYZ" data-cover="../img/capas/Capa Album.jpg">
+            <span class="track-index">05</span>
+            <span class="track-info">
+              <strong>Thriller AgressivV remix 2025 wav</strong>
+              <small>2TWOBOYZ</small>
+            </span>
+            <span class="track-duration">0:00</span>
+          </button>
+
+          <button class="track" type="button" data-track data-src="../audio/2TWOBOYZ- PIKHATA .mp3" data-title="PIKHATA" data-artist="2TWOBOYZ" data-cover="../img/capas/Capa Album.jpg">
+            <span class="track-index">06</span>
+            <span class="track-info">
+              <strong>PIKHATA</strong>
+              <small>2TWOBOYZ</small>
+            </span>
+            <span class="track-duration">0:00</span>
+          </button>
+
+          <button class="track" type="button" data-track data-src="../audio/2TWOBOYZ- YALA.mp3" data-title="YALA" data-artist="2TWOBOYZ" data-cover="../img/capas/Capa Album.jpg">
+            <span class="track-index">07</span>
+            <span class="track-info">
+              <strong>YALA</strong>
+              <small>2TWOBOYZ</small>
+            </span>
+            <span class="track-duration">0:00</span>
+          </button>
+
+          <button class="track" type="button" data-track data-src="../audio/2TWOBOYZ-anomalia_2.mp3" data-title="anomalia_2" data-artist="2TWOBOYZ" data-cover="../img/capas/Capa Album.jpg">
+            <span class="track-index">08</span>
+            <span class="track-info">
+              <strong>anomalia_2</strong>
+              <small>2TWOBOYZ</small>
+            </span>
+            <span class="track-duration">0:00</span>
+          </button>
+
+          <button class="track" type="button" data-track data-src="../audio/2TWOBOYZ-Pé-Finkado-_remix2_.mp3" data-title="Pé-Finkado-_remix2_" data-artist="2TWOBOYZ" data-cover="../img/capas/Capa Album.jpg">
+            <span class="track-index">09</span>
+            <span class="track-info">
+              <strong>Pé-Finkado-_remix2_</strong>
+              <small>2TWOBOYZ</small>
+            </span>
+            <span class="track-duration">0:00</span>
+          </button>
+
+          <button class="track" type="button" data-track data-src="../audio/BALUMA.mp3" data-title="BALUMA" data-artist="Omnia Sponsors" data-cover="../img/capas/Capa Album.jpg">
+            <span class="track-index">10</span>
+            <span class="track-info">
+              <strong>BALUMA</strong>
+              <small>Omnia Sponsors</small>
+            </span>
+            <span class="track-duration">0:00</span>
+          </button>
+
+          <button class="track" type="button" data-track data-src="../audio/CARRO REMIX.mp3" data-title="CARRO REMIX" data-artist="Omnia Sponsors" data-cover="../img/capas/Capa Album.jpg">
+            <span class="track-index">11</span>
+            <span class="track-info">
+              <strong>CARRO REMIX</strong>
+              <small>Omnia Sponsors</small>
+            </span>
+            <span class="track-duration">0:00</span>
+          </button>
+
+          <button class="track" type="button" data-track data-src="../audio/RICHIE CAMPBELL - LOVE AGAIN (DREV REMIX).wav" data-title="LOVE AGAIN (DREV REMIX)" data-artist="RICHIE CAMPBELL" data-cover="../img/capas/Capa Album.jpg">
+            <span class="track-index">12</span>
+            <span class="track-info">
+              <strong>LOVE AGAIN (DREV REMIX)</strong>
+              <small>RICHIE CAMPBELL</small>
+            </span>
+            <span class="track-duration">0:00</span>
+          </button>
+
+          <div class="player-bar">
+            <div class="player-meta">
+              <span class="player-label">Agora tocando</span>
+              <strong id="playerTitle">Selecione uma faixa</strong>
+              <span id="playerArtist">Omnia Sponsors</span>
+            </div>
+            <button class="player-toggle" id="playerToggle" type="button">Tocar</button>
+            <div class="player-progress">
+              <span id="playerCurrent">0:00</span>
+              <div class="player-track">
+                <span id="playerFill"></span>
+              </div>
+              <span id="playerTotal">0:00</span>
+            </div>
+          </div>
+
+          <audio id="sponsorAudio" preload="metadata"></audio>
+        </div>
+      </div>
+    </section>
+
+    <section class="sponsor-cta">
+      <div class="sponsor-cta-card">
+        <h2>Quer fazer parte da proxima temporada?</h2>
+        <p>
+          Entre em contato com a Omnia e apresente seu projeto. Nossa equipe vai
+          selecionar os proximos atletas e DJs que vao representar a marca.
+        </p>
+        <a class="dashboard-cta" href="../index.html#contact">Falar com a Omnia</a>
+      </div>
+    </section>
+  </main>
+
+  <script type="application/json" id="sponsorsData">
+  {
+    "sponsors": [
+      {
+        "id": "aurora",
+        "name": "DJ Aurora",
+        "role": "DJ",
+        "bio": "Set envolvente com house e afro, criando a trilha oficial do aniversario Omnia.",
+        "image": "../img/fotos patrocinados.jpg",
+        "tags": ["Lisboa", "Afro House"],
+        "featured": true
+      },
+      {
+        "id": "neon",
+        "name": "DJ Neon Pulse",
+        "role": "DJ",
+        "bio": "Produtor de beats eletrizantes para performances e campanhas comemorativas.",
+        "image": "../img/fotos patrocinados.jpg",
+        "tags": ["Porto", "Tech House"],
+        "featured": true
+      },
+      {
+        "id": "maia",
+        "name": "Maia Rocha",
+        "role": "Atleta",
+        "bio": "Atleta de alta performance que representa determinacao e foco em cada competicao.",
+        "image": "../img/fotos patrocinados.jpg",
+        "tags": ["Judo", "Competicoes nacionais"],
+        "featured": false
+      },
+      {
+        "id": "lucas",
+        "name": "Lucas Velo",
+        "role": "Atleta",
+        "bio": "Energia e resistencia em esportes de combate, mostrando a forca da nova geracao.",
+        "image": "../img/fotos patrocinados.jpg",
+        "tags": ["Kickboxing", "Equipe Omnia"],
+        "featured": true
+      },
+      {
+        "id": "lumen",
+        "name": "DJ Lumen",
+        "role": "DJ",
+        "bio": "Atmosfera sonora para eventos de celebracao, misturando musica eletronicamente sofisticada.",
+        "image": "../img/fotos patrocinados.jpg",
+        "tags": ["Lisboa", "Progressive"],
+        "featured": false
+      },
+      {
+        "id": "sofia",
+        "name": "Sofia Vale",
+        "role": "Atleta",
+        "bio": "Presenca marcante em provas de resistencia e inspiracao para novas atletas.",
+        "image": "../img/fotos patrocinados.jpg",
+        "tags": ["Crossfit", "Performance"],
+        "featured": false
+      }
+    ],
+    "timeline": [
+      {
+        "year": "2016",
+        "title": "Fundacao da Omnia",
+        "text": "Nascimento do estudio com foco em narrativa audiovisual e identidade de marca."
+      },
+      {
+        "year": "2018",
+        "title": "Primeiros videoclipes",
+        "text": "Parcerias com artistas locais e producao de clipes autorais."
+      },
+      {
+        "year": "2020",
+        "title": "Expansao digital",
+        "text": "Conteudos multiplataforma e crescimento em campanhas para marcas."
+      },
+      {
+        "year": "2022",
+        "title": "Omnia Labs",
+        "text": "Novas tecnologias, drone e producoes cinematograficas."
+      },
+      {
+        "year": "2024",
+        "title": "Comunidade criativa",
+        "text": "Eventos e colabs com atletas, DJs e creators."
+      },
+      {
+        "year": "2026",
+        "title": "10 anos Omnia",
+        "text": "Sponsor Season abre espaco para talentos que movem a cultura."
+      }
+    ]
+  }
+  </script>
+
+  <script src="../script.js" defer></script>
+  <script src="sponsors.js" defer></script>
+</body>
+</html>

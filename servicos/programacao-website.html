@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Website | Omnia</title>
+  <meta name="description" content="Desenvolvimento de websites rápidos, responsivos e orientados à conversão.">
+  <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<!-- =========================
+     NAVBAR
+========================= -->
+<header class="navbar">
+  <div class="nav-container">
+    <h1 class="logo">
+       <a href="../index.html#top">
+        <img src="../img/lente logo omnia.png" alt="Logotipo Omnia Produções">
+      </a>
+    </h1>
+    <button class="menu-btn" onclick="openMenu()" aria-label="Abrir menu">&#9776;</button>
+  </div>
+</header>
+
+<!-- =========================
+     MENU LATERAL
+========================= -->
+<aside id="sideMenu" class="side-menu">
+  <button class="close-btn" onclick="closeMenu()" aria-label="Fechar menu">&times;</button>
+    <nav class="side-nav">
+    <a href="../index.html#top" onclick="closeMenu()">Início</a>
+    <a href="programacao-consultoria.html" onclick="closeMenu()">Programação</a>
+    <a href="#about" onclick="closeMenu()">Sobre</a>
+    <a href="#overview" onclick="closeMenu()">Visão geral</a>
+    <a href="#benefits" onclick="closeMenu()">Diferenciais</a>
+    <a href="#cta" onclick="closeMenu()">Contato</a>
+  </nav>
+  <a class="menu-secret" href="../login/index.html" aria-label="Acesso ao login">
+    <img src="../img/lente logo omnia.png" alt="Acesso ao login">
+  </a>
+</aside>
+
+<section class="section hero-service" id="about">
+  <div class="section-header">
+    <span class="section-eyebrow">Soluções digitais</span>
+    <h2>Website</h2>
+    <p class="section-sub">
+      Sites institucionais e landing pages construídos para diferentes telas, com foco em clareza, performance e conversão.
+    </p>
+  </div>
+</section>
+
+<section class="section" id="overview">
+  <div class="topic-grid">
+    <div class="topic-copy">
+      <h3>Visão geral</h3>
+      <p class="text">
+        Responsive web design adapta o layout a diferentes tamanhos de tela, garantindo leitura e navegação confortáveis em desktop e mobile.
+      </p>
+      <ul class="topic-list">
+        <li>Arquitetura da informação alinhada ao objetivo do negócio.</li>
+        <li>Design responsivo com hierarquia visual clara.</li>
+        <li>Base técnica sólida para performance e SEO.</li>
+      </ul>
+    </div>
+    <div class="topic-media">
+      <img src="https://images.pexels.com/photos/5125366/pexels-photo-5125366.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Tela com código e interface de website">
+    </div>
+  </div>
+</section>
+
+<section class="section dark" id="benefits">
+  <div class="section-header">
+    <span class="section-eyebrow">Diferenciais</span>
+    <h2>Experiência que converte</h2>
+    <p class="section-sub">Unimos design, conteúdo e performance para transformar visitas em contato.</p>
+  </div>
+  <div class="topic-steps">
+    <div class="topic-step">
+      <h4>Estrutura estratégica</h4>
+      <p class="text">Mapeamos objetivos e jornada para guiar o usuário com clareza.</p>
+    </div>
+    <div class="topic-step">
+      <h4>Visual consistente</h4>
+      <p class="text">Tipografia, cores e imagens trabalhando juntos para valorizar sua marca.</p>
+    </div>
+    <div class="topic-step">
+      <h4>Foco em resultado</h4>
+      <p class="text">Páginas pensadas para conversão, com chamadas diretas e fluxo simples.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="cta">
+  <div class="section-header">
+    <h2>Vamos tirar seu site do papel?</h2>
+    <p class="section-sub">Conte com a Omnia para um website rápido, bonito e pronto para vender.</p>
+    <div class="topic-cta-group">
+      <a class="topic-cta" href="../index.html#contact">Falar com a Omnia</a>
+    </div>
+  </div>
+</section>
+
+<script src="../script.js" defer></script>
+
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin | Omnia Producoes</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body class="admin-page">
+
+  <header class="navbar">
+    <div class="nav-container">
+      <h1 class="logo">
+        <a href="../index.html#top" aria-label="Voltar ao inicio">
+          <img src="../img/lente logo omnia.png" alt="Logotipo Omnia Producoes">
+        </a>
+      </h1>
+    </div>
+  </header>
+
+  <main class="admin-shell">
+    <section class="admin-card">
+      <h2>Token Admin</h2>
+      <p class="admin-muted">Use o token do Worker para liberar as acoes internas.</p>
+      <form class="admin-form" id="tokenForm">
+        <label for="admin-token">Token</label>
+        <input id="admin-token" type="password" placeholder="Cole o ADMIN_TOKEN">
+        <div class="admin-actions">
+          <button class="admin-btn" type="submit">Salvar token</button>
+        </div>
+        <p class="admin-status" id="tokenStatus"></p>
+      </form>
+    </section>
+
+    <section class="admin-card">
+      <h2>Criar usuario</h2>
+      <form class="admin-form" id="createUserForm">
+        <label for="user-email">Usuário ou e-mail</label>
+        <input id="user-email" type="text" required placeholder="jvdiamond97 ou cliente@empresa.com">
+
+        <label for="user-password">Senha</label>
+        <input id="user-password" type="text" required placeholder="Senha forte">
+
+        <label for="user-role">Role</label>
+        <select id="user-role">
+          <option value="client">client</option>
+          <option value="admin">admin</option>
+        </select>
+
+        <div class="admin-actions">
+          <button class="admin-btn" type="submit">Criar usuario</button>
+        </div>
+        <p class="admin-status" id="userStatus"></p>
+      </form>
+    </section>
+
+    <section class="admin-card">
+      <h2>Adicionar card no dashboard</h2>
+      <form class="admin-form" id="createCardForm">
+        <label for="card-email">E-mail do cliente</label>
+        <input id="card-email" type="email" required placeholder="cliente@empresa.com">
+
+        <label for="card-title">Titulo</label>
+        <input id="card-title" type="text" required placeholder="Status do projeto">
+
+        <label for="card-meta">Meta</label>
+        <input id="card-meta" type="text" placeholder="Atualizado hoje">
+
+        <label for="card-body">Descricao</label>
+        <textarea id="card-body" rows="3" placeholder="Em producao. Proxima entrega: cortes finais."></textarea>
+
+        <label for="card-action-label">Texto do botao</label>
+        <input id="card-action-label" type="text" placeholder="Ver cronograma">
+
+        <label for="card-action-url">Link do botao</label>
+        <input id="card-action-url" type="url" placeholder="https://exemplo.com">
+
+        <div class="admin-actions">
+          <button class="admin-btn" type="submit">Salvar card</button>
+        </div>
+        <p class="admin-status" id="cardStatus"></p>
+      </form>
+    </section>
+
+    <section class="admin-card">
+      <h2>Adicionar arquivo</h2>
+      <form class="admin-form" id="createFileForm">
+        <label for="file-email">E-mail do cliente</label>
+        <input id="file-email" type="email" required placeholder="cliente@empresa.com">
+
+        <label for="file-name">Nome do arquivo</label>
+        <input id="file-name" type="text" required placeholder="Omnia_Storyboard.pdf">
+
+        <label for="file-status">Status</label>
+        <input id="file-status" type="text" placeholder="Disponivel">
+
+        <label for="file-date">Data</label>
+        <input id="file-date" type="text" placeholder="Hoje">
+
+        <div class="admin-actions">
+          <button class="admin-btn" type="submit">Salvar arquivo</button>
+        </div>
+        <p class="admin-status" id="fileStatus"></p>
+      </form>
+    </section>
+  </main>
+
+  <script src="admin.js" defer></script>
+</body>
+</html>

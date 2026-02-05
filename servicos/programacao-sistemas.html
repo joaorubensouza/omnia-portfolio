@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistemas | Omnia</title>
+  <meta name="description" content="Sistemas personalizados para automatizar processos, integrar dados e dar escala ao negócio.">
+  <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<!-- =========================
+     NAVBAR
+========================= -->
+<header class="navbar">
+  <div class="nav-container">
+    <h1 class="logo">
+       <a href="../index.html#top">
+        <img src="../img/lente logo omnia.png" alt="Logotipo Omnia Produções">
+      </a>
+    </h1>
+    <button class="menu-btn" onclick="openMenu()" aria-label="Abrir menu">&#9776;</button>
+  </div>
+</header>
+
+<!-- =========================
+     MENU LATERAL
+========================= -->
+<aside id="sideMenu" class="side-menu">
+  <button class="close-btn" onclick="closeMenu()" aria-label="Fechar menu">&times;</button>
+    <nav class="side-nav">
+    <a href="../index.html#top" onclick="closeMenu()">Início</a>
+    <a href="programacao-consultoria.html" onclick="closeMenu()">Programação</a>
+    <a href="#about" onclick="closeMenu()">Sobre</a>
+    <a href="#overview" onclick="closeMenu()">Visão geral</a>
+    <a href="#benefits" onclick="closeMenu()">Aplicações</a>
+    <a href="#cta" onclick="closeMenu()">Contato</a>
+  </nav>
+  <a class="menu-secret" href="../login/index.html" aria-label="Acesso ao login">
+    <img src="../img/lente logo omnia.png" alt="Acesso ao login">
+  </a>
+</aside>
+
+<section class="section hero-service" id="about">
+  <div class="section-header">
+    <span class="section-eyebrow">Soluções digitais</span>
+    <h2>Sistemas</h2>
+    <p class="section-sub">
+      Sistemas sob medida para automatizar processos, integrar dados e melhorar a gestão.
+    </p>
+  </div>
+</section>
+
+<section class="section" id="overview">
+  <div class="topic-grid">
+    <div class="topic-copy">
+      <h3>Visão geral</h3>
+      <p class="text">
+        Automação de processos usa software para executar tarefas repetitivas e reduzir gargalos, liberando o time para decisões estratégicas.
+      </p>
+      <ul class="topic-list">
+        <li>Mapeamento do fluxo atual e definição de metas.</li>
+        <li>Integrações via API com ferramentas existentes.</li>
+        <li>Dashboards e relatórios para acompanhar resultados.</li>
+      </ul>
+    </div>
+    <div class="topic-media">
+      <img src="https://images.pexels.com/photos/34207359/pexels-photo-34207359.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="Braço robótico em ambiente industrial">
+    </div>
+  </div>
+</section>
+
+<section class="section dark" id="benefits">
+  <div class="section-header">
+    <span class="section-eyebrow">Aplicações</span>
+    <h2>Onde os sistemas fazem diferença</h2>
+    <p class="section-sub">Da operação ao comercial, criamos ferramentas que organizam dados e aceleram decisões.</p>
+  </div>
+  <div class="topic-steps">
+    <div class="topic-step">
+      <h4>Operação integrada</h4>
+      <p class="text">Conecte CRM, financeiro e atendimento para uma visão única do negócio.</p>
+    </div>
+    <div class="topic-step">
+      <h4>Automação inteligente</h4>
+      <p class="text">Reduza tarefas manuais e evite erros em processos repetitivos.</p>
+    </div>
+    <div class="topic-step">
+      <h4>Dados acionáveis</h4>
+      <p class="text">Dashboards claros para acompanhar metas e performance.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="cta">
+  <div class="section-header">
+    <h2>Vamos automatizar sua operação?</h2>
+    <p class="section-sub">A Omnia cria sistemas que trazem controle, velocidade e escala.</p>
+    <div class="topic-cta-group">
+      <a class="topic-cta" href="../index.html#contact">Falar com a Omnia</a>
+    </div>
+  </div>
+</section>
+
+<script src="../script.js" defer></script>
+
+</body>
+</html>

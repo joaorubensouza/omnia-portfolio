@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fotografia Profissional | Omnia</title>
+  <meta name="description" content="Produção fotografica profissional, vídeos cinematográficos, drone e storytelling para marcas.">
+
+  <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+
+<!-- =========================
+     NAVBAR
+========================= -->
+<header class="navbar">
+  <div class="nav-container">
+    <h1 class="logo">
+       <a href="../index.html#top">
+        <img src="../img/lente logo omnia.png" alt="Logotipo Omnia Produções">
+      </a>
+    </h1>
+    <button class="menu-btn" onclick="openMenu()" aria-label="Abrir menu">&#9776;</button>
+  </div>
+</header>
+
+<!-- =========================
+     MENU LATERAL
+========================= -->
+<aside id="sideMenu" class="side-menu">
+  <button class="close-btn" onclick="closeMenu()" aria-label="Fechar menu">&times;</button>
+    <nav class="side-nav">
+    <a href="../index.html#top" onclick="closeMenu()">Início</a>
+    <a href="#about" onclick="closeMenu()">Sobre</a>
+    <a href="#services" onclick="closeMenu()">Serviços</a>
+    <a href="#portfolio" onclick="closeMenu()">Portfólio</a>
+    <a href="../index.html#depoimentos" onclick="closeMenu()">Depoimentos</a>
+    <a href="../index.html#contact" onclick="closeMenu()">Contato</a>
+  </nav>
+  <a class="menu-secret" href="../login/index.html" aria-label="Acesso ao login">
+    <img src="../img/lente logo omnia.png" alt="Acesso ao login">
+  </a>
+</aside>
+
+<!-- resto da página -->
+
+
+
+<section class="section hero-service compact" id="about">
+  <h2>DESTAQUE</h2>
+</section>
+
+<section class="section audiovisual-cards-section" id="services">
+
+  <div class="cards-3d-wrapper">
+
+  <a href="galeria-comerciais-foto.html" class="card-link">
+    <div class="card-3d">
+      <img src="../img/_DSC10.png">
+      <h3>Comerciais</h3>
+      <p>Impacto & Conversão</p>
+    </div>
+  </a>
+
+  <a href="galeria-fotografia.html" class="card-link">
+    <div class="card-3d">
+      <img src="../img/_DSC9.png">
+      <h3>Produções Fotográficas</h3>
+      <p>Narrativa Visual</p>
+    </div>
+  </a>
+
+  <a href="galeria-drone.html" class="card-link">
+    <div class="card-3d">
+      <img src="../img/_DSC11.png">
+      <h3>Drone</h3>
+      <p>Captação Aérea</p>
+    </div>
+  </a>
+
+</div>
+
+
+</section>
+
+<section class="section week-selection">
+  <h3>SELEÇÃO DA SEMANA</h3>
+</section>
+
+<!-- =========================
+     PORTFÓLIO - ANTOGO
+========================= -->
+<section id="portfolio" class="section">
+
+
+  <div class="portfolio-grid">
+  <img src="../img/_DSC1.jpg" alt="">
+  <img src="../img/_DSC2.jpg" alt="">
+  <img src="../img/_DSC3.jpg" alt="">
+  <img src="../img/_DSC4.jpg" alt="">
+  <img src="../img/_DSC5.jpg" alt="">
+  <img src="../img/_DSC6.jpg" alt="">
+  <img src="../img/_DSC7.jpg" alt="">
+  <img src="../img/_DSC8.png" alt="">
+  <img src="../img/_DSC9.png" alt="">
+  <img src="../img/_DSC10.png" alt="">
+</div>
+
+
+
+<!-- =========================
+     LIGHTBOX PORTFÓLIO
+========================= -->
+<div id="lightbox">
+  <span class="close">&times;</span>
+  <span class="prev">&lsaquo;</span>
+  <span class="next">&rsaquo;</span>
+
+  <div class="lightbox-content">
+    <img id="lightbox-img" src="" alt="">
+    <video id="lightbox-video" controls></video>
+  </div>
+</div>
+
+
+<script src="../script.js" defer></script>
+</body>
+</html>

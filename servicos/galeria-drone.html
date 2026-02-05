@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fotos Institucional</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+  <div class="nav-container">
+    <h1 class="logo">
+      <a href="../index.html#top">
+        <img src="../img/lente logo omnia.png" alt="Logotipo Omnia Produções">
+      </a>
+    </h1>
+  
+    <button class="menu-btn" onclick="openMenu()" aria-label="Abrir menu">&#9776;</button>
+  </div>
+</header>
+
+<aside id="sideMenu" class="side-menu">
+  <button class="close-btn" onclick="closeMenu()" aria-label="Fechar menu">&times;</button>
+  <nav class="side-nav">
+    <a href="../index.html#top">Início</a>
+    <a href="../index.html#quem-somos">Quem Somos</a>
+    <a href="../index.html#depoimentos">Depoimentos</a>
+    <a href="../index.html#contact">Contato</a>
+
+    <div class="menu-group">
+      <button class="menu-toggle" type="button">SERVIÇOS <span class="arrow"></span></button>
+      <div class="submenu">
+        <a href="../servicos/producao-audiovisual.html">Produção Audiovisual</a>
+        <a href="../servicos/galeria-fotos-institucional.html">Fotografia</a>
+        <a href="../servicos/programacao-consultoria.html">Programação & Consultoria</a>
+      </div>
+    </div>
+
+    <div class="menu-group">
+      <button class="menu-toggle" type="button">GALERIAS <span class="arrow"></span></button>
+      <div class="submenu">
+        <a href="../servicos/galeria-fotografia.html">Fotografia</a>
+        <a href="../servicos/galeria-drone.html">Drone</a>
+        <a href="../servicos/galeria-conteudo-social.html">Conteúdo Social</a>
+        <a href="../servicos/galeria-fotos-institucional.html">Institucional</a>
+      </div>
+    </div>
+  </nav>
+
+  <a class="menu-secret" href="../login/index.html" aria-label="Acesso ao login">
+    <img src="../img/lente logo omnia.png" alt="Acesso ao login">
+  </a>
+</aside>
+
+<section class="section">
+  <h2>Fotos Drone</h2>
+  <p class="text">Registro profissional e narrativa visual</p>
+
+  <div class="portfolio-grid">
+    <img src="../img/drone/01.jpg">
+    <img src="../img/drone/02.jpg">
+    <img src="../img/drone/03.jpg">
+    <img src="../img/drone/04.jpg">
+    <img src="../img/drone/05.jpg">
+    <img src="../img/drone/06.jpg">
+    <img src="../img/drone/07.jpg">
+    <img src="../img/drone/08.jpg">
+    <img src="../img/drone/09.jpg">
+    <img src="../img/drone/10.jpg">
+    <img src="../img/drone/11.jpg">
+    <img src="../img/drone/12.jpg">
+    <img src="../img/drone/13.jpg">
+    <img src="../img/drone/14.jpg">
+    <img src="../img/drone/15.jpg">
+    <img src="../img/drone/16.jpg">
+    <img src="../img/drone/17.jpg">
+    <img src="../img/drone/18.jpg">
+    <img src="../img/drone/19.jpg">
+    <img src="../img/drone/20.jpg">
+    <img src="../img/drone/21.jpg">
+    <img src="../img/drone/22.jpg">
+    <img src="../img/drone/23.jpg">
+    <img src="../img/drone/24.jpg">
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div id="lightbox">
+  <span class="close">&times;</span>
+  <span class="prev">&lsaquo;</span>
+
+  <div class="lightbox-content">
+    <img id="lightbox-img" alt="">
+    <video id="lightbox-video" controls></video>
+  </div>
+
+  <span class="next">&rsaquo;</span>
+</div>
+
+<script src="../script.js" defer></script>
+
+
+</body>
+</html>

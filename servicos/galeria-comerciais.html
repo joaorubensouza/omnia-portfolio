@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Videos Comerciais | Omnia</title>
+  <meta name="description" content="Galeria de videos comerciais e campanhas da Omnia.">
+  <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+  <div class="nav-container">
+    <h1 class="logo">
+      <a href="../index.html#top">
+        <img src="../img/lente logo omnia.png" alt="Logotipo Omnia Producoes">
+      </a>
+    </h1>
+    <button class="menu-btn" onclick="openMenu()" aria-label="Abrir menu">&#9776;</button>
+  </div>
+</header>
+
+<aside id="sideMenu" class="side-menu">
+  <button class="close-btn" onclick="closeMenu()" aria-label="Fechar menu">&times;</button>
+  <nav class="side-nav">
+    <a href="../index.html#top">Inicio</a>
+    <a href="../index.html#quem-somos">Quem Somos</a>
+    <a href="../index.html#depoimentos">Depoimentos</a>
+    <a href="../index.html#contact">Contato</a>
+
+    <div class="menu-group">
+      <button class="menu-toggle" type="button">SERVICOS <span class="arrow"></span></button>
+      <div class="submenu">
+        <a href="../servicos/producao-audiovisual.html">Producao Audiovisual</a>
+        <a href="../servicos/galeria-fotos-institucional.html">Fotografia</a>
+        <a href="../servicos/programacao-consultoria.html">Programacao & Consultoria</a>
+      </div>
+    </div>
+
+    <div class="menu-group">
+      <button class="menu-toggle" type="button">GALERIAS <span class="arrow"></span></button>
+      <div class="submenu">
+        <a href="../servicos/galeria-comerciais.html">Comerciais</a>
+        <a href="../servicos/galeria-cinematografica.html">Cinematografica</a>
+        <a href="../servicos/galeria-video-institucional.html">Drone</a>
+        <a href="../servicos/galeria-fotografia.html">Fotografia</a>
+        <a href="../servicos/galeria-drone.html">Drone Foto</a>
+        <a href="../servicos/galeria-conteudo-social.html">Conteudo Social</a>
+        <a href="../servicos/galeria-fotos-institucional.html">Institucional</a>
+      </div>
+    </div>
+  </nav>
+
+  <a class="menu-secret" href="../login/index.html" aria-label="Acesso ao login">
+    <img src="../img/lente logo omnia.png" alt="Acesso ao login">
+  </a>
+</aside>
+
+<section class="section">
+  <h2>Videos Comerciais</h2>
+  <p class="text">Selecao de campanhas e conteudos de marca.</p>
+
+  <div class="video-gallery-grid">
+    <div class="video-embed">
+      <iframe
+        src="https://www.youtube.com/embed/zq2_CRy2p8w"
+        title="Comercial 01"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+
+    <div class="video-embed">
+      <iframe
+        src="https://www.youtube.com/embed/dVq8rxwj_TU"
+        title="Comercial 02"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+
+    <div class="video-embed">
+      <iframe
+        src="https://www.youtube.com/embed/YZXWrH2Hitk"
+        title="Comercial 03"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </div>
+</section>
+
+<script src="../script.js" defer></script>
+
+</body>
+</html>

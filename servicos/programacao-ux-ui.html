@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UX / UI | Omnia</title>
+  <meta name="description" content="UX e UI para criar interfaces claras, bonitas e fáceis de usar.">
+  <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<!-- =========================
+     NAVBAR
+========================= -->
+<header class="navbar">
+  <div class="nav-container">
+    <h1 class="logo">
+       <a href="../index.html#top">
+        <img src="../img/lente logo omnia.png" alt="Logotipo Omnia Produções">
+      </a>
+    </h1>
+    <button class="menu-btn" onclick="openMenu()" aria-label="Abrir menu">&#9776;</button>
+  </div>
+</header>
+
+<!-- =========================
+     MENU LATERAL
+========================= -->
+<aside id="sideMenu" class="side-menu">
+  <button class="close-btn" onclick="closeMenu()" aria-label="Fechar menu">&times;</button>
+    <nav class="side-nav">
+    <a href="../index.html#top" onclick="closeMenu()">Início</a>
+    <a href="programacao-consultoria.html" onclick="closeMenu()">Programação</a>
+    <a href="#about" onclick="closeMenu()">Sobre</a>
+    <a href="#overview" onclick="closeMenu()">Visão geral</a>
+    <a href="#benefits" onclick="closeMenu()">Entregas</a>
+    <a href="#cta" onclick="closeMenu()">Contato</a>
+  </nav>
+  <a class="menu-secret" href="../login/index.html" aria-label="Acesso ao login">
+    <img src="../img/lente logo omnia.png" alt="Acesso ao login">
+  </a>
+</aside>
+
+<section class="section hero-service" id="about">
+  <div class="section-header">
+    <span class="section-eyebrow">Soluções digitais</span>
+    <h2>UX / UI</h2>
+    <p class="section-sub">
+      Experiência do usuário e interfaces visuais que tornam o produto intuitivo, elegante e eficiente.
+    </p>
+  </div>
+</section>
+
+<section class="section" id="overview">
+  <div class="topic-grid">
+    <div class="topic-copy">
+      <h3>Visão geral</h3>
+      <p class="text">
+        UX foca nas necessidades, expectativas e emoções do usuário ao interagir com um produto digital, orientando decisões de design.
+      </p>
+      <ul class="topic-list">
+        <li>Pesquisa e entendimento do público.</li>
+        <li>Arquitetura da informação e fluxos claros.</li>
+        <li>Interface visual alinhada à marca.</li>
+      </ul>
+    </div>
+    <div class="topic-media">
+      <img src="https://cdn.pixabay.com/photo/2021/01/19/08/09/user-interface-5927963_1280.jpg" alt="Ilustração de UX e UI">
+    </div>
+  </div>
+</section>
+
+<section class="section dark" id="benefits">
+  <div class="section-header">
+    <span class="section-eyebrow">Entregas</span>
+    <h2>Interface bonita e fácil de usar</h2>
+    <p class="section-sub">Do conceito ao protótipo, criamos experiências que encantam e convertem.</p>
+  </div>
+  <div class="topic-steps">
+    <div class="topic-step">
+      <h4>Pesquisa e jornada</h4>
+      <p class="text">Entendemos o comportamento para mapear dores e oportunidades.</p>
+    </div>
+    <div class="topic-step">
+      <h4>Wireframes e protótipos</h4>
+      <p class="text">Organização das telas com foco em usabilidade.</p>
+    </div>
+    <div class="topic-step">
+      <h4>UI visual refinada</h4>
+      <p class="text">Layouts consistentes, componentes e microinterações.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="cta">
+  <div class="section-header">
+    <h2>Quer elevar a experiência do seu produto?</h2>
+    <p class="section-sub">A Omnia transforma ideias em interfaces claras e memoráveis.</p>
+    <div class="topic-cta-group">
+      <a class="topic-cta" href="../index.html#contact">Falar com a Omnia</a>
+    </div>
+  </div>
+</section>
+
+<script src="../script.js" defer></script>
+
+</body>
+</html>

@@ -1,0 +1,212 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Programação & Consultoria | Omnia</title>
+  <meta name="description" content="Produção Programação profissional, sites, jogos, aplicativos e software para empresas.">
+
+  <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<!-- =========================
+     NAVBAR
+========================= -->
+<header class="navbar">
+  <div class="nav-container">
+    <h1 class="logo">
+       <a href="../index.html#top">
+        <img src="../img/lente logo omnia.png" alt="Logotipo Omnia Produções">
+      </a>
+    </h1>
+    <button class="menu-btn" onclick="openMenu()" aria-label="Abrir menu">&#9776;</button>
+  </div>
+</header>
+
+<!-- =========================
+     MENU LATERAL
+========================= -->
+<aside id="sideMenu" class="side-menu">
+  <button class="close-btn" onclick="closeMenu()" aria-label="Fechar menu">&times;</button>
+    <nav class="side-nav">
+    <a href="../index.html#top" onclick="closeMenu()">Início</a>
+    <a href="#about" onclick="closeMenu()">Sobre</a>
+    <a href="#services" onclick="closeMenu()">Serviços</a>
+    <a href="#portfolio" onclick="closeMenu()">Portfólio</a>
+    <a href="../index.html#depoimentos" onclick="closeMenu()">Depoimentos</a>
+    <a href="../index.html#contact" onclick="closeMenu()">Contato</a>
+  </nav>
+  <a class="menu-secret" href="../login/index.html" aria-label="Acesso ao login">
+    <img src="../img/lente logo omnia.png" alt="Acesso ao login">
+  </a>
+</aside>
+
+<!-- resto da página -->
+
+<section class="section hero-service" id="about">
+  <h2>Programação & Consultoria</h2>
+  <p class="text">
+    Soluções digitais, performance e posicionamento estratégico.
+  </p>
+  <!-- BLOCO DE CÓDIGO DEMONSTRATIVO -->
+  <div class="code-editor reveal">
+  <div class="editor-header">
+    <span class="dot red"></span>
+    <span class="dot yellow"></span>
+    <span class="dot green"></span>
+    <span class="editor-title">index.html</span>
+    <button class="code-play-btn" type="button" aria-label="Executar código" data-run-hm>▶</button>
+  </div>
+
+  <pre class="editor-body"><code>
+<span class="tag">&lt;!DOCTYPE</span> <span class="attr">html</span><span class="tag">&gt;</span>
+<span class="tag">&lt;html</span> <span class="attr">lang</span>=<span class="value">"pt-BR"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;head&gt;</span>
+    <span class="tag">&lt;meta</span> <span class="attr">charset</span>=<span class="value">"UTF-8"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;title&gt;</span>Omnia Dev<span class="tag">&lt;/title&gt;</span>
+  <span class="tag">&lt;/head&gt;</span>
+  <span class="tag">&lt;body&gt;</span>
+    <span class="tag">&lt;section</span> <span class="attr">class</span>=<span class="value">"solutions"</span><span class="tag">&gt;</span>
+      <span class="comment">&lt;!-- Soluções Digitais --&gt;</span>
+    <span class="tag">&lt;/section&gt;</span>
+  <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span>
+</code></pre>
+</div>
+
+  <div class="code-game hidden" data-hm-game>
+    <div class="code-game-header">
+      <span class="game-hint">Dica: qual a melhor empresa?</span>
+      <span class="game-status" data-hm-status>Pronto para jogar.</span>
+    </div>
+    <div class="hangman-board">
+      <div class="hangman-figure" data-hm-figure>
+        <div class="hangman-drawing" data-hm-drawing data-stage="0">
+          <span class="gallows base"></span>
+          <span class="gallows pole"></span>
+          <span class="gallows beam"></span>
+          <span class="gallows rope"></span>
+          <span class="man head"></span>
+          <span class="man body"></span>
+          <span class="man arm left"></span>
+          <span class="man arm right"></span>
+          <span class="man leg left"></span>
+          <span class="man leg right"></span>
+          <div class="hangman-victory" aria-hidden="true">
+            <span class="victory-head"></span>
+            <span class="victory-body"></span>
+            <span class="victory-arm"></span>
+            <span class="victory-leg"></span>
+            <span class="victory-stem"></span>
+            <span class="victory-flower"></span>
+          </div>
+        </div>
+        <span class="hangman-score" data-hm-score>Erros: 0/6</span>
+      </div>
+      <div class="hangman-word" data-hm-word>_ _ _ _ _</div>
+    </div>
+    <div class="hangman-letters" data-hm-letters></div>
+    <p class="game-answer" data-hm-answer>Resposta: Omnia</p>
+  </div>
+
+</section>
+
+<section class="section" id="services">
+  <h3>O que entregamos</h3>
+  <p class="text">
+    Desenvolvimento de sites, sistemas, automações, consultoria digital
+    e estratégia de imagem para marcas e profissionais.
+  </p>
+</section>
+
+<section class="section dark">
+  <h3>Soluções Digitais</h3>
+
+  <div class="services-grid programacao-grid">
+
+    <a class="service-card card-link" href="programacao-website.html" target="_blank" rel="noopener">
+      <img src="../img/Programador.png" alt="Website">
+      <h4>Website</h4>
+      <p>
+        Sites institucionais, landing pages e portfólios
+        rápidos, responsivos e focados em conversão.
+      </p>
+    </a>
+
+    <a class="service-card card-link" href="programacao-sistemas.html" target="_blank" rel="noopener">
+      <img src="../img/AUTOMACAO.png" alt="Sistemas">
+      <h4>Sistemas</h4>
+      <p>
+        Desenvolvimento de sistemas personalizados
+        para otimizar processos e gestão.
+      </p>
+    </a>
+
+    <a class="service-card card-link" href="programacao-ux-ui.html" target="_blank" rel="noopener">
+      <img src="../img/UX .png" alt="UX UI">
+      <h4>UX / UI</h4>
+      <p>
+        Design de interfaces focado em usabilidade,
+        estética e experiência do usuário.
+      </p>
+    </a>
+
+  </div>
+</section>
+
+
+<!-- BLOG CINEMATOGRÁFICO -->
+<section class="blog-cine" id="portfolio">
+
+  <div class="blog-item reveal">
+    <div class="blog-text">
+      <h3>Código limpo e performance</h3>
+      <p>
+        Desenvolvemos soluções focadas em velocidade, estabilidade
+        e experiência do usuário, usando boas práticas e arquitetura sólida.
+      </p>
+    </div>
+
+    <div class="blog-media zoom">
+      <!-- IMAGEM DE CÓDIGO -->
+      <img src="../img/imagem programacao.png" alt="Código e desenvolvimento">
+    </div>
+  </div>
+
+  <div class="blog-item reverse reveal">
+    <div class="blog-text">
+      <h3>Consultoria de imagem digital</h3>
+      <p>
+        Analisamos presença online, estética visual e comunicação
+        para alinhar sua marca com o público certo.
+      </p>
+    </div>
+
+    <div class="blog-media zoom">
+      <!-- IMAGEM INSTAGRAM / BRANDING -->
+      <img src="../img/TESTE.png" alt="Consultoria de imagem">
+    </div>
+  </div>
+
+  <div class="blog-item reveal">
+    <div class="blog-text">
+      <h3>Estratégia, dados e crescimento</h3>
+      <p>
+        Decisões baseadas em dados, métricas e objetivos claros
+        para crescimento digital sustentável.
+      </p>
+    </div>
+
+    <div class="blog-media zoom">
+      <!-- IMAGEM DASHBOARD -->
+      <img src="../img/ChatGPT Image Jan 15, 2026, 01_10_25 PM.png" alt="Estratégia digital">
+    </div>
+  </div>
+
+</section>
+
+<script src="../script.js" defer></script>
+</body>
+</html>

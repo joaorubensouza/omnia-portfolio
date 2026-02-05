@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <title>Omnia Produções</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body id="top">
+
+<!-- =========================
+     NAVBAR
+========================= -->
+<header class="navbar">
+  <div class="nav-container">
+    <h1 class="logo">
+      <a href="#top" aria-label="Voltar ao início">
+        <img src="img/lente logo omnia.png" alt="Logotipo Omnia Produções">
+      </a>
+    </h1>
+    <button class="menu-btn" onclick="openMenu()" aria-label="Abrir menu">&#9776;</button>
+  </div>
+</header>
+
+<!-- =========================
+     MENU LATERAL
+========================= -->
+<aside id="sideMenu" class="side-menu">
+  <button class="close-btn" onclick="closeMenu()" aria-label="Fechar menu">&times;</button>
+
+  <nav class="side-nav">
+
+    <a href="#top">Início</a>
+
+    <a href="#quem-somos">Quem Somos</a>
+
+    <!-- SERVIÇOS -->
+    <div class="menu-group">
+  <button class="menu-toggle" type="button">
+    SERVIÇOS
+    <span class="arrow"></span>
+  </button>
+
+  <div class="submenu">
+    <a href="servicos/producao-audiovisual.html">Produção Audiovisual</a>
+    <a href="servicos/producao-fotografia.html">Fotografia</a>
+    <a href="servicos/programacao-consultoria.html">Programação & Consultoria</a>
+  </div>
+</div>
+
+
+    <!-- GALERIAS -->
+    <div class="menu-group">
+  <button class="menu-toggle" type="button">
+    GALERIAS
+    <span class="arrow"></span>
+  </button>
+
+  <div class="submenu">
+    <a href="servicos/galeria-fotografia.html">Fotografia</a>
+    <a href="servicos/galeria-drone.html">Drone</a>
+    <a href="servicos/galeria-conteudo-social.html">Conteúdo Social</a>
+    <a href="servicos/galeria-fotos-institucional.html">Institucional</a>
+  </div>
+</div>
+
+
+
+    <a href="#depoimentos">Depoimentos</a>
+    <a href="#contact">Contato</a>
+    <a href="login/sponsors.html">Sponsors</a>
+
+    <!-- BOTÃO ORÇAMENTO -->
+    <a href="#contact" class="menu-cta">
+      Fazer Orçamento
+    </a>
+</nav>
+
+  <a class="menu-secret" href="login/index.html" aria-label="Acesso ao login">
+    <img src="img/lente logo omnia.png" alt="Acesso ao login">
+  </a>
+
+</aside>
+
+
+
+<!-- =========================
+     HERO
+========================= -->
+<section class="hero">
+
+ <!-- DESKTOP -->
+<video class="hero-video desktop-video" poster="img/foto capa.png"
+  autoplay
+  muted
+  loop
+  playsinline webkit-playsinline
+  preload="auto">
+  <source src="videos/Site.mp4" type="video/mp4">
+</video>
+
+<!-- MOBILE -->
+<video class="hero-video mobile-video" poster="img/foto capa.png"
+  autoplay
+  muted
+  loop
+  playsinline webkit-playsinline
+  preload="auto">
+  <source src="videos/Site.mp4" type="video/mp4">
+</video>
+
+</section>
+
+<!-- =========================
+     SERVIÇOS
+========================= -->
+<section id="services" class="section">
+  <div class="section-header">
+    <p class="section-eyebrow">Serviços</p>
+    <h2>Experiências visuais completas</h2>
+    <p class="section-sub">Clique nos cards para saber mais.</p>
+  </div>
+  <div class="services-grid">
+    <a href="servicos/producao-audiovisual.html" class="card card-link service-card reveal">
+  <div class="service-image">
+    <img src="img/_DSC7.jpg" alt="Foto de produção audiovisual">
+  </div>
+
+  <div class="service-info">
+    <h3>Produção Audiovisual</h3>
+    <p>Vídeos institucionais, comerciais e eventos.</p>
+  </div>
+</a>
+
+
+   <a href="servicos/producao-fotografia.html" class="card card-link service-card reveal">
+  <div class="service-image">
+    <img src="img/_DSC8.png" alt="Foto de fotografia profissional">
+  </div>
+
+  <div class="service-info">
+    <h3>Fotografia Profissional</h3>
+    <p>Ensaios, produtos e fotografia corporativa.</p>
+  </div>
+</a>
+
+
+    <a href="servicos/programacao-consultoria.html" class="card card-link service-card reveal">
+  <div class="service-image">
+    <img src="img/Programador.png" alt="Ilustração de programação">
+  </div>
+
+  <div class="service-info">
+    <h3>Programação</h3>
+    <p>Websites, soluções digitais e automações.</p>
+  </div>
+</a>
+
+
+    <a href="servicos/programacao-consultoria.html" class="card card-link service-card reveal">
+  <div class="service-image">
+    <img src="img/_DSC6.jpg" alt="Foto de consultoria">
+  </div>
+
+  <div class="service-info">
+    <h3>Consultoria</h3>
+    <p>Estratégia, posicionamento e imagem.</p>
+  </div>
+</a>
+  </div>
+</section>
+
+
+<!-- =========================
+     DEPOIMENTOS
+========================= -->
+<section id="depoimentos" class="section dark testimonials-section">
+  <div class="section-header">
+    <p class="section-eyebrow">Depoimentos</p>
+    <h2>Resultados que falam por si</h2>
+    <p class="section-sub">
+      Parcerias reais, entregas consistentes e clientes satisfeitos.
+    </p>
+  </div>
+
+  <div class="testimonials-grid">
+    <article class="testimonial-card reveal">
+      <div class="testimonial-logo logo-sony">
+        <img src="img/sonyc.png" alt="Sony">
+      </div>
+      <p>“A Omnia entregou um projeto impecável, com captação e edição no padrão que precisávamos. Processo ágil e resultado acima do esperado.”</p>
+      <div class="testimonial-author">
+        <strong>Sony</strong>
+        <span>Produção & Conteúdo</span>
+      </div>
+    </article>
+
+    <article class="testimonial-card reveal">
+      <div class="testimonial-logo logo-nepster">
+        <img src="img/nepster.png" alt="Nepster">
+      </div>
+      <p>“Equipe extremamente profissional. Alinharam briefing, prazos e entregas com clareza. O material ficou perfeito para nossas campanhas.”</p>
+      <div class="testimonial-author">
+        <strong>Nepster</strong>
+        <span>Marketing</span>
+      </div>
+    </article>
+
+    <article class="testimonial-card reveal">
+      <div class="testimonial-logo logo-universal">
+        <img src="img/universal.png" alt="Universal Production Music">
+      </div>
+      <p>“Narrativa visual forte e acabamento cinematográfico. A Omnia conseguiu traduzir exatamente a identidade que queríamos comunicar.”</p>
+      <div class="testimonial-author">
+        <strong>Universal Production Music</strong>
+        <span>Produção & Direção</span>
+      </div>
+    </article>
+  </div>
+</section>
+
+
+
+<!-- =========================
+     SOBRE
+========================= -->
+<section id="quem-somos" class="section dark about-section">
+  <div class="about-container">
+
+    <h2>Quem Somos</h2>
+
+<section class="srea">
+  <video
+    class="about-video"
+    autoplay
+    muted
+    loop
+    playsinline webkit-playsinline
+    preload="metadata"
+  >
+    <source src="videos/procura f.mp4" type="video/mp4">
+  </video>
+</section>
+
+
+    <p class="about-intro">
+      Na Omnia Produções, acreditamos que cada história merece ser contada de forma autêntica e memorável.
+    </p>
+
+    <p>
+      Fundada por <strong>Bruno Alfama</strong>, a nossa empresa aposta numa abordagem integrada de produção audiovisual —
+      desde a conceção criativa e roteiro, até à filmagem, edição e pós-produção.
+    </p>
+
+    <p>
+      O nosso foco é criar conteúdos que não só comuniquem uma mensagem,
+      mas que também conectem emocionalmente com quem vê — seja atravês de vêdeos promocionais,
+      documentários, conteúdos corporativos ou narrativas artísticas.
+    </p>
+
+    <h3>O Que Fazemos</h3>
+
+    <ul class="about-list">
+  <li><strong>Produção Audiovisual</strong> &mdash; Vídeos institucionais, promocionais, comerciais e documentários.</li>
+  <li><strong>Filmagens Profissionais</strong> &mdash; Captura de imagem e som em alta qualidade.</li>
+  <li><strong>Edição & Pós-Produção</strong> &mdash; Montagem, correção de cor, motion graphics e design de som.</li>
+  <li><strong>Conteúdos Digitais</strong> &mdash; Vídeos otimizados para redes sociais, websites e campanhas.</li>
+  <li><strong>Cobertura de Eventos</strong> &mdash; Registo de eventos, apresentações, lançamentos e espetáculos.</li>
+</ul>
+
+    <p>
+      Cada projeto é tratado com atendimento personalizado, criatividade estratégica e rigor técnico,
+      garantindo resultados que superam expectativas.
+    </p>
+
+    <h3>A Nossa Visóo</h3>
+
+    <p>
+      Ser reconhecida como uma referência em produção audiovisual criativa em Portugal,
+      destacando-se pela qualidade, inovação e impacto cultural dos seus trabalhos.
+    </p>
+
+    <h3>Porquê "Omnia"?</h3>
+
+    <p>
+      O nome Omnia reflete a nossa ambição de abraçar tudo o que é essencial para uma boa narrativa —
+      criatividade, técnica, emoção e significado — numa só produção.
+    </p>
+
+  </div>
+</section>
+
+
+<!-- =========================
+     CONTATO
+========================= -->
+<section id="contact" class="section dark">
+  <div class="section-header">
+    <p class="section-eyebrow">Contato</p>
+    <h2>Vamos criar algo memorável</h2>
+    <p class="section-sub">Conte-nos sobre sua ideia e retornamos rapidamente.</p>
+  </div>
+
+  <div class="contact-box">
+
+    <form
+  class="form-animate"
+  id="contactForm"
+>
+
+
+      <div class="field">
+        <label>Seu nome</label>
+  <input type="text" name="name" required>
+  
+</div>
+
+<div class="field">
+  <label>Seu email</label>
+  <input type="email" name="email" required>
+  
+</div>
+
+<div class="bobo">
+  <label>Selecione o serviço</label>
+  <select name="_subject" required>
+    <option value="" disabled selected></option>
+    <option value="Produção Audiovisual">Produção Audiovisual</option>
+    <option value="Fotografia Profissional">Fotografia Profissional</option>
+    <option value="Programação & Consultoria">Programação & Consultoria</option>
+  </select>
+  
+</div>
+
+<div class="field">
+  <label>Mensagem</label>
+  <textarea name="message" required></textarea>
+</div>
+
+<button type="submit">Enviar</button>
+
+  <div class="contact-video-wrapper">
+
+  <!-- VÍDEO DESKTOP -->
+  <video
+    class="contact-video"
+    autoplay
+    muted
+    loop
+    playsinline webkit-playsinline
+    preload="metadata"
+  >
+    <source src="videos/notificação omn_f.mp4" type="video/mp4">
+  </video>
+
+  <!-- GIF MOBILE -->
+  <img
+    src="img/notificação omn_f.gif"
+    alt="Notificação Omnia"
+    class="contact-gif"
+  />
+
+</div>
+
+
+<div class="contact-social">
+
+  <p class="contact-note">
+    Ou fale connosco diretamente
+  </p>
+
+  <a 
+    class="social-btn whatsapp"
+    href="https://wa.me/351925385272?text=Olá%20vim%20pelo%20site%20da%20Omnia"
+    target="_blank" rel="noopener"
+  >
+    <img src="img/zap.png" alt="Ícone do WhatsApp">
+    <span>Falar no WhatsApp</span>
+  </a>
+
+  <a 
+    class="social-btn instagram"
+    href="https://www.instagram.com/omnia.prod"
+    target="_blank" rel="noopener"
+  >
+    <img src="img/ansta.png" alt="Ícone do Instagram">
+    <span>Ver Instagram</span>
+  </a>
+
+</div>
+
+
+
+<input type="hidden" name="cc" value="">
+</form>
+
+    <p id="form-success">
+  Mensagem enviada com sucesso!
+  Em breve entraremos em contato.
+</p>
+
+  </div>
+</section>
+
+
+
+<!-- =========================
+     LIGHTBOX
+========================= -->
+<div id="lightbox">
+  <span class="close">&times;</span>
+  <span class="prev">&lsaquo;</span>
+
+  <div class="lightbox-content">
+    <img id="lightbox-img" alt="">
+    <video id="lightbox-video" controls></video>
+  </div>
+
+  <span class="next">&rsaquo;</span>
+</div>
+
+<script src="script.js" defer></script>
+
+
+</body>
+</html>
+

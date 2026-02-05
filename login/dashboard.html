@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <title>Dashboard | Omnia Producoes</title>
+  <meta name="description" content="Area exclusiva de clientes Omnia.">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body class="dashboard-page">
+
+  <header class="navbar">
+    <div class="nav-container">
+      <h1 class="logo">
+        <a href="../index.html#top" aria-label="Voltar ao inicio">
+          <img src="../img/lente logo omnia.png" alt="Logotipo Omnia Producoes">
+        </a>
+      </h1>
+      <div class="dashboard-actions">
+        <a class="manager-link" href="https://wa.me/351000000000" target="_blank" rel="noopener" aria-label="Falar com o gestor no WhatsApp">
+          <img class="manager-icon" src="../img/bruno cartaz3.png" alt="Gestor">
+        </a>
+        <span class="dashboard-user" id="userEmail">Cliente</span>
+        <button class="dashboard-btn" id="logoutBtn" type="button">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="dashboard-shell">
+    <section class="dashboard-hero">
+      <p class="dashboard-kicker">Omnia Producoes</p>
+      <h1>Seu painel de producao</h1>
+      <p class="dashboard-sub">
+        Acompanhe projetos, entregas e novidades em tempo real.
+      </p>
+      <div class="dashboard-hero-actions">
+        <a class="dashboard-cta" href="https://wa.me/351000000000" target="_blank" rel="noopener">Falar com o gestor</a>
+        <button class="dashboard-ghost" type="button" id="openCalendarFormAlt">Novo item</button>
+      </div>
+    </section>
+
+    <section class="dashboard-stats">
+      <div class="stat-card">
+        <p class="stat-label">Eventos</p>
+        <p class="stat-value" id="statEvents">0</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-label">Packs</p>
+        <p class="stat-value" id="statPacks">0</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-label">Arquivos</p>
+        <p class="stat-value" id="statFiles">0</p>
+      </div>
+    </section>
+
+    <section class="dashboard-grid" id="dashboardCards"></section>
+
+    <section class="dashboard-files">
+      <div class="dashboard-files-header">
+        <h2>Arquivos e entregas</h2>
+        <a class="dashboard-link" href="https://wa.me/351000000000" target="_blank" rel="noopener">Enviar arquivo</a>
+      </div>
+      <div class="dashboard-table" id="dashboardFiles"></div>
+    </section>
+
+    <section class="dashboard-calendar">
+      <aside class="calendar-sidebar">
+        <div class="calendar-sidebar-header">
+          <h2>Calendario</h2>
+          <button class="calendar-add" id="calendarQuickAdd" type="button">+</button>
+        </div>
+
+        <div class="calendar-card">
+          <p class="calendar-card-title">Tipo de conteudo</p>
+          <div class="calendar-tags">
+            <span>Fotos</span>
+            <span>Videos</span>
+          </div>
+        </div>
+
+        <div class="calendar-card">
+          <p class="calendar-card-title">Plataformas</p>
+          <div class="calendar-tags">
+            <span>Instagram</span>
+            <span>TikTok</span>
+            <span>Site</span>
+            <span>YouTube</span>
+          </div>
+        </div>
+
+        <div class="calendar-card">
+          <p class="calendar-card-title">Packs de foto e video</p>
+          <div class="calendar-packs" id="packsList"></div>
+        </div>
+      </aside>
+
+      <div class="calendar-main">
+        <div class="calendar-top">
+          <span class="calendar-pill" id="calendarViewLabel">Mes</span>
+          <h3 id="calendarTitle">Fevereiro 2026</h3>
+          <div class="calendar-top-actions">
+            <button class="calendar-nav" id="calendarPrev" type="button">&#8249;</button>
+            <button class="calendar-nav" id="calendarNext" type="button">&#8250;</button>
+            <button class="calendar-add calendar-add--primary" id="openCalendarForm" type="button">+ Add</button>
+          </div>
+        </div>
+
+        <div class="calendar-filters">
+          <input id="calendarSearch" type="search" placeholder="Buscar item...">
+          <select id="calendarTypeFilter">
+            <option value="all">Todos os tipos</option>
+            <option value="foto">Fotos</option>
+            <option value="video">Videos</option>
+            <option value="reuniao">Reuniao</option>
+            <option value="entrega">Entrega</option>
+            <option value="geral">Geral</option>
+          </select>
+          <select id="calendarStatusFilter">
+            <option value="all">Todos os status</option>
+            <option value="pendente">Pendente</option>
+            <option value="producao">Em producao</option>
+            <option value="aprovacao">Em aprovacao</option>
+            <option value="entregue">Entregue</option>
+          </select>
+          <div class="calendar-view-toggle">
+            <button class="calendar-toggle-btn active" data-view="month" type="button">Mes</button>
+            <button class="calendar-toggle-btn" data-view="week" type="button">Semana</button>
+          </div>
+        </div>
+
+        <div class="calendar-weekdays">
+          <span>Seg</span>
+          <span>Ter</span>
+          <span>Qua</span>
+          <span>Qui</span>
+          <span>Sex</span>
+          <span>Sab</span>
+          <span>Dom</span>
+        </div>
+
+        <div class="calendar-grid" id="calendarGrid"></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="calendar-modal" id="calendarModal" hidden>
+    <div class="calendar-modal-backdrop" id="calendarBackdrop"></div>
+    <form class="calendar-form" id="calendarForm">
+      <div class="calendar-form-header">
+        <h4>Novo item</h4>
+        <button class="calendar-close" type="button" id="closeCalendarForm">x</button>
+      </div>
+      <input id="calendar-id" type="hidden">
+      <label for="calendar-title">Titulo</label>
+      <input id="calendar-title" type="text" required placeholder="Revisao de cortes">
+      <label for="calendar-date">Data</label>
+      <input id="calendar-date" type="date" required>
+      <label for="calendar-type">Tipo</label>
+      <select id="calendar-type">
+        <option value="foto">Fotos</option>
+        <option value="video">Videos</option>
+        <option value="reuniao">Reuniao</option>
+        <option value="entrega">Entrega</option>
+        <option value="geral">Geral</option>
+      </select>
+      <label for="calendar-status">Status</label>
+      <select id="calendar-status">
+        <option value="pendente">Pendente</option>
+        <option value="producao">Em producao</option>
+        <option value="aprovacao">Em aprovacao</option>
+        <option value="entregue">Entregue</option>
+      </select>
+      <label for="calendar-reminder">Lembrete (dias antes)</label>
+      <select id="calendar-reminder">
+        <option value="0">Sem lembrete</option>
+        <option value="1">1 dia antes</option>
+        <option value="3">3 dias antes</option>
+        <option value="7">7 dias antes</option>
+      </select>
+      <label for="calendar-notes">Notas</label>
+      <textarea id="calendar-notes" rows="3" placeholder="Detalhes do item"></textarea>
+      <div class="calendar-form-actions">
+        <button class="calendar-delete" type="button" id="calendarDelete" hidden>Excluir</button>
+        <button class="calendar-submit" type="submit">Salvar</button>
+      </div>
+      <p class="calendar-status" id="calendarStatus"></p>
+    </form>
+  </div>
+
+  <script src="dashboard.js" defer></script>
+</body>
+</html>
