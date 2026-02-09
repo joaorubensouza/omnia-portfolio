@@ -564,3 +564,33 @@ if (hero) {
   hero.addEventListener("click", resumeHeroVideos);
   hero.addEventListener("touchstart", resumeHeroVideos, { passive: true });
 }
+
+/* =====================
+   CAMERA CURSOR (DESKTOP)
+===================== */
+(() => {
+  if (!document.body || !window.matchMedia) return;
+  if (!window.matchMedia("(pointer: fine)").matches) return;
+
+  document.body.classList.add("camera-cursor");
+
+  if (document.querySelector(".cursor-flash")) return;
+
+  const flash = document.createElement("span");
+  flash.className = "cursor-flash";
+  document.body.appendChild(flash);
+
+  const triggerFlash = (x, y) => {
+    flash.style.left = `${x}px`;
+    flash.style.top = `${y}px`;
+    flash.classList.remove("is-active");
+    void flash.offsetWidth;
+    flash.classList.add("is-active");
+  };
+
+  document.addEventListener("pointerdown", (event) => {
+    if (event.pointerType && event.pointerType !== "mouse") return;
+    if (event.button !== 0) return;
+    triggerFlash(event.clientX, event.clientY);
+  });
+})();

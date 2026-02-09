@@ -184,6 +184,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!audio || tracks.length === 0) return;
 
   let activeIndex = -1;
+  let isScrubbing = false;
+  let scrubTrack = null;
 
   const formatTime = (value) => {
     if (!Number.isFinite(value)) return "0:00";
@@ -229,6 +231,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const progress = audio.duration ? (time / audio.duration) * 100 : 0;
     if (fill) fill.style.width = `${progress}%`;
     if (topFill) topFill.style.width = `${progress}%`;
+    if (bottomProgressTrack) {
+      bottomProgressTrack.style.setProperty("--progress", `${progress}%`);
+    }
+    if (topProgressTrack) {
+      topProgressTrack.style.setProperty("--progress", `${progress}%`);
+    }
   };
 
   const updateTotal = () => {
@@ -274,12 +282,33 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
 
-  const seekTo = (event, trackEl) => {
+  const seekTo = (clientX, trackEl) => {
     if (!audio.duration) return;
     const rect = trackEl.getBoundingClientRect();
-    const percent = (event.clientX - rect.left) / rect.width;
+    const percent = (clientX - rect.left) / rect.width;
     const clamped = Math.max(0, Math.min(1, percent));
     audio.currentTime = clamped * audio.duration;
+    updateProgress();
+  };
+
+  const startScrub = (event, trackEl) => {
+    if (!audio.duration) return;
+    if (event.button !== 0 && event.pointerType === "mouse") return;
+    isScrubbing = true;
+    scrubTrack = trackEl;
+    seekTo(event.clientX, trackEl);
+    event.preventDefault();
+  };
+
+  const moveScrub = (event) => {
+    if (!isScrubbing || !scrubTrack) return;
+    seekTo(event.clientX, scrubTrack);
+  };
+
+  const endScrub = () => {
+    if (!isScrubbing) return;
+    isScrubbing = false;
+    scrubTrack = null;
   };
 
   tracks.forEach((button, index) => {
@@ -340,15 +369,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (topProgressTrack) {
     topProgressTrack.addEventListener("click", (event) => {
-      seekTo(event, topProgressTrack);
+      seekTo(event.clientX, topProgressTrack);
+    });
+
+    topProgressTrack.addEventListener("pointerdown", (event) => {
+      startScrub(event, topProgressTrack);
     });
   }
 
   if (bottomProgressTrack) {
     bottomProgressTrack.addEventListener("click", (event) => {
-      seekTo(event, bottomProgressTrack);
+      seekTo(event.clientX, bottomProgressTrack);
+    });
+
+    bottomProgressTrack.addEventListener("pointerdown", (event) => {
+      startScrub(event, bottomProgressTrack);
     });
   }
+
+  window.addEventListener("pointermove", moveScrub);
+  window.addEventListener("pointerup", endScrub);
+  window.addEventListener("pointercancel", endScrub);
 
   audio.addEventListener("play", () => {
     updateToggle(true);
