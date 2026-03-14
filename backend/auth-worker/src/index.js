@@ -118,11 +118,19 @@ function requireAdmin(request, env) {
   return true;
 }
 
+function matchesAdminEmail(email) {
+  if (!email) return false;
+  const normalized = String(email).toLowerCase();
+  const local = normalized.split("@")[0];
+  const admin = ADMIN_EMAIL.toLowerCase();
+  return normalized === admin || local === admin;
+}
+
 function isAdminSession(session) {
   if (!session) return false;
   const email = String(session.email || "").toLowerCase();
   const role = String(session.role || "").toLowerCase();
-  return role === "admin" || email === ADMIN_EMAIL.toLowerCase();
+  return role === "admin" || matchesAdminEmail(email);
 }
 
 async function getUserIdByEmail(env, email) {

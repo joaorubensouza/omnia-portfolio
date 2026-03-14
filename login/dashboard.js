@@ -169,8 +169,10 @@ function populateAdminAlbumSelect(albums) {
 function isAdminProfile(profile) {
   if (!profile) return false;
   const email = String(profile.email || "").toLowerCase();
+  const local = email.split("@")[0];
   const role = String(profile.role || "").toLowerCase();
-  return role === "admin" || email === ADMIN_EMAIL.toLowerCase();
+  const admin = ADMIN_EMAIL.toLowerCase();
+  return role === "admin" || email === admin || local === admin;
 }
 
 let calendarState = {
