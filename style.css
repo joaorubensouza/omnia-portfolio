@@ -627,7 +627,37 @@ body {
   display: grid;
   gap: 14px;
 }
+.dashboard-dropzone {
+  border: 2px dashed rgba(255,255,255,0.25);
+  border-radius: 18px;
+  padding: 26px;
+  text-align: center;
+  display: grid;
+  gap: 8px;
+  cursor: pointer;
+  background: rgba(255,255,255,0.03);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
 
+.dashboard-dropzone.is-drag {
+  border-color: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.08);
+}
+
+.dropzone-content strong {
+  font-size: 1rem;
+  color: #fff;
+}
+
+.dropzone-content span {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.85rem;
+}
+
+.dropzone-meta {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.8rem;
+}
 .dashboard-upload-field {
   display: grid;
   gap: 8px;
@@ -664,7 +694,23 @@ body {
   color: rgba(255,255,255,0.7);
   font-size: 0.85rem;
 }
+.dashboard-upload-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 6px;
+  max-height: 160px;
+  overflow-y: auto;
+  color: rgba(255,255,255,0.75);
+  font-size: 0.85rem;
+}
 
+.dashboard-upload-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
 .dashboard-table {
   display: grid;
   gap: 12px;
@@ -6168,5 +6214,7 @@ body.camera-cursor {
 .player-toggle.is-playing::before {
   background-image: var(--player-pause-icon);
 }
+
+
 
 

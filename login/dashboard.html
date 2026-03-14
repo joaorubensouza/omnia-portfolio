@@ -73,17 +73,23 @@
       </div>
 
       <form class="dashboard-upload-form" id="galleryUploadForm">
-        <div class="dashboard-upload-field">
-          <label for="galleryAlbum">Album</label>
+        <div class="dashboard-dropzone" id="galleryDropzone" role="button" tabindex="0" aria-label="Enviar fotos">
+          <input id="galleryFiles" name="files" type="file" accept="image/*" multiple hidden>
+          <div class="dropzone-content">
+            <strong>Arraste e solte as fotos</strong>
+            <span>ou clique para selecionar</span>
+          </div>
+          <div class="dropzone-meta" id="galleryFilesMeta">Nenhum arquivo selecionado</div>
+        </div>
+
+        <div class="dashboard-upload-field" id="galleryAlbumField" hidden>
+          <label for="galleryAlbum">Galeria</label>
           <select id="galleryAlbum" required></select>
         </div>
 
-        <div class="dashboard-upload-field">
-          <label for="galleryFiles">Fotos</label>
-          <input id="galleryFiles" name="files" type="file" accept="image/*" multiple required>
-        </div>
+        <ul class="dashboard-upload-list" id="galleryFilesList"></ul>
 
-        <button class="dashboard-upload-btn" type="submit">Enviar fotos</button>
+        <button class="dashboard-upload-btn" id="galleryUploadBtn" type="submit" disabled>Enviar fotos</button>
         <p class="dashboard-upload-status" id="galleryUploadStatus" aria-live="polite"></p>
       </form>
     </section>

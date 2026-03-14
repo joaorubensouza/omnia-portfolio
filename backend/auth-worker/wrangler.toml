@@ -1,0 +1,15 @@
+name = "omnia-auth"
+main = "src/index.js"
+compatibility_date = "2025-01-15"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "omnia_auth"
+database_id = "966f904a-db44-4e6d-b438-1806c55c2b40"
+
+[[r2_buckets]]
+binding = "ALBUMS_BUCKET"
+bucket_name = "omnia-albums"
+
+[vars]
+ALLOWED_ORIGINS = "https://omniaprod.pt,https://www.omniaprod.pt"

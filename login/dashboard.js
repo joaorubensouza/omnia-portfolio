@@ -314,8 +314,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const prevBtn = document.getElementById("calendarPrev");
   const nextBtn = document.getElementById("calendarNext");
   const uploadForm = document.getElementById("galleryUploadForm");
+  const dropzone = document.getElementById("galleryDropzone");
   const albumSelect = document.getElementById("galleryAlbum");
+  const albumField = document.getElementById("galleryAlbumField");
   const fileInput = document.getElementById("galleryFiles");
+  const filesMeta = document.getElementById("galleryFilesMeta");
+  const filesList = document.getElementById("galleryFilesList");
+  const uploadBtn = document.getElementById("galleryUploadBtn");
   const uploadStatus = document.getElementById("galleryUploadStatus");
 
   if (modal) {
@@ -496,53 +501,148 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (uploadForm) {
+    let selectedFiles = [];
+    let isUploading = false;
+
+    const renderFiles = () => {
+      if (!filesList) return;
+      filesList.innerHTML = "";
+      selectedFiles.slice(0, 8).forEach((file) => {
+        const li = document.createElement("li");
+        li.textContent = file.name;
+        filesList.appendChild(li);
+      });
+      if (selectedFiles.length > 8) {
+        const li = document.createElement("li");
+        li.textContent = `+ ${selectedFiles.length - 8} arquivos`;
+        filesList.appendChild(li);
+      }
+    };
+
+    const syncUi = () => {
+      const hasFiles = selectedFiles.length > 0;
+      const hasAlbum = albumSelect ? Boolean(albumSelect.value) : true;
+      if (filesMeta) {
+        filesMeta.textContent = hasFiles
+          ? `${selectedFiles.length} foto(s) selecionada(s)`
+          : "Nenhum arquivo selecionado";
+      }
+      if (albumField) albumField.hidden = !hasFiles;
+      if (uploadBtn) uploadBtn.disabled = !hasFiles || isUploading || !hasAlbum;
+      renderFiles();
+    };
+
+    const setFiles = (files) => {
+      selectedFiles = files.filter((file) => file.type && file.type.startsWith("image/"));
+      if (uploadStatus) uploadStatus.textContent = "";
+      syncUi();
+    };
+
     fetchAlbums()
       .then(populateAlbumSelect)
       .catch(() => {
         populateAlbumSelect([]);
       });
 
+    if (albumSelect) {
+      albumSelect.addEventListener("change", syncUi);
+    }
+
+    if (dropzone) {
+      const openPicker = () => {
+        if (fileInput) fileInput.click();
+      };
+
+      dropzone.addEventListener("click", openPicker);
+      dropzone.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openPicker();
+        }
+      });
+
+      dropzone.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        dropzone.classList.add("is-drag");
+      });
+
+      dropzone.addEventListener("dragleave", () => {
+        dropzone.classList.remove("is-drag");
+      });
+
+      dropzone.addEventListener("drop", (event) => {
+        event.preventDefault();
+        dropzone.classList.remove("is-drag");
+        const dropped = Array.from(event.dataTransfer.files || []);
+        setFiles(dropped);
+      });
+    }
+
+    if (fileInput) {
+      fileInput.addEventListener("change", (event) => {
+        const picked = Array.from(event.target.files || []);
+        setFiles(picked);
+      });
+    }
+
     uploadForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       if (uploadStatus) uploadStatus.textContent = "";
 
       const albumId = albumSelect ? albumSelect.value : "";
-      const files = fileInput ? Array.from(fileInput.files || []) : [];
-
       if (!albumId) {
-        if (uploadStatus) uploadStatus.textContent = "Selecione um album.";
+        if (uploadStatus) uploadStatus.textContent = "Selecione uma galeria.";
         return;
       }
 
-      if (!files.length) {
-        if (uploadStatus) uploadStatus.textContent = "Selecione pelo menos uma foto.";
+      if (!selectedFiles.length) {
+        if (uploadStatus) uploadStatus.textContent = "Adicione pelo menos uma foto.";
         return;
       }
 
-      const formData = new FormData();
-      files.forEach((file) => formData.append("files", file));
+      if (isUploading) return;
+      isUploading = true;
+      syncUi();
 
-      const response = await fetch(`${API_BASE}/albums/${albumId}/upload`, {
-        method: "POST",
-        credentials: "include",
-        body: formData
-      });
+      const batchSize = 5;
+      let uploadedCount = 0;
 
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        if (uploadStatus) {
-          uploadStatus.textContent = data.message || "Nao foi possivel enviar.";
+      for (let i = 0; i < selectedFiles.length; i += batchSize) {
+        const batch = selectedFiles.slice(i, i + batchSize);
+        const formData = new FormData();
+        batch.forEach((file) => formData.append("files", file));
+
+        const response = await fetch(`${API_BASE}/albums/${albumId}/upload`, {
+          method: "POST",
+          credentials: "include",
+          body: formData
+        });
+
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          if (uploadStatus) {
+            uploadStatus.textContent = data.message || "Nao foi possivel enviar.";
+          }
+          isUploading = false;
+          syncUi();
+          return;
         }
-        return;
+
+        uploadedCount += (data.assets || []).length || batch.length;
+        if (uploadStatus) {
+          uploadStatus.textContent = `Enviadas ${uploadedCount} foto(s)...`;
+        }
       }
 
       if (uploadStatus) {
-        const count = (data.assets || []).length || files.length;
-        uploadStatus.textContent = `Enviadas ${count} foto(s) com sucesso.`;
+        uploadStatus.textContent = `Enviadas ${uploadedCount} foto(s) com sucesso.`;
       }
 
-      uploadForm.reset();
-      populateAlbumSelect(await fetchAlbums());
+      selectedFiles = [];
+      if (fileInput) fileInput.value = "";
+      if (albumSelect) albumSelect.value = "";
+      isUploading = false;
+      syncUi();
     });
   }
 
