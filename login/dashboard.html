@@ -94,6 +94,22 @@
       </form>
     </section>
 
+    <section class="dashboard-admin" id="adminGallerySection" hidden>
+      <div class="dashboard-upload-header">
+        <h2>Gerenciar galerias (Admin)</h2>
+        <p>Visualize e remova fotos enviadas por engano.</p>
+      </div>
+      <div class="dashboard-admin-controls">
+        <div class="dashboard-upload-field">
+          <label for="adminAlbum">Galeria</label>
+          <select id="adminAlbum"></select>
+        </div>
+        <button class="dashboard-upload-btn" id="adminRefreshBtn" type="button">Atualizar lista</button>
+      </div>
+      <p class="dashboard-upload-status" id="adminGalleryStatus" aria-live="polite"></p>
+      <div class="admin-gallery-grid" id="adminGalleryGrid"></div>
+    </section>
+
     <section class="dashboard-calendar">
       <aside class="calendar-sidebar">
         <div class="calendar-sidebar-header">

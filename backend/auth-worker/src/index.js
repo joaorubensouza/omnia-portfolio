@@ -12,6 +12,7 @@ const ALBUMS = [
 
 const MAX_UPLOAD_FILES = 50;
 const MAX_UPLOAD_BYTES = 12 * 1024 * 1024;
+const ADMIN_EMAIL = "jvdiamond97";
 
 function jsonResponse(data, status = 200, headers = {}) {
   return new Response(JSON.stringify(data), {
@@ -115,6 +116,13 @@ function requireAdmin(request, env) {
     return false;
   }
   return true;
+}
+
+function isAdminSession(session) {
+  if (!session) return false;
+  const email = String(session.email || "").toLowerCase();
+  const role = String(session.role || "").toLowerCase();
+  return role === "admin" || email === ADMIN_EMAIL.toLowerCase();
 }
 
 async function getUserIdByEmail(env, email) {
@@ -637,6 +645,43 @@ async function handleAlbumAssetFetch(request, env, albumId, assetId) {
   return new Response(object.body, { status: 200, headers });
 }
 
+async function handleAlbumAssetDelete(request, env, albumId, assetId) {
+  const album = getAlbumById(albumId);
+  if (!album) {
+    return errorResponse("Album nao encontrado.", 404);
+  }
+
+  const session = await getSessionUser(request, env);
+  if (!isAdminSession(session)) {
+    return errorResponse("Nao autorizado.", 401);
+  }
+
+  const record = await env.DB.prepare(
+    `SELECT object_key
+     FROM album_assets
+     WHERE id = ? AND album_id = ?`
+  )
+    .bind(assetId, albumId)
+    .first();
+
+  if (!record) {
+    return errorResponse("Arquivo nao encontrado.", 404);
+  }
+
+  if (env.ALBUMS_BUCKET) {
+    await env.ALBUMS_BUCKET.delete(record.object_key);
+  }
+
+  await env.DB.prepare(
+    "DELETE FROM album_assets WHERE id = ? AND album_id = ?"
+  )
+    .bind(assetId, albumId)
+    .run();
+
+  const headers = addCorsHeaders(request, {}, env);
+  return jsonResponse({ ok: true }, 200, headers);
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -644,7 +689,7 @@ export default {
 
     if (request.method === "OPTIONS") {
       const headers = addCorsHeaders(request, {}, env);
-      headers["Access-Control-Allow-Methods"] = "GET,POST,OPTIONS";
+      headers["Access-Control-Allow-Methods"] = "GET,POST,DELETE,OPTIONS";
       headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization";
       return new Response(null, { status: 204, headers });
     }
@@ -673,6 +718,14 @@ export default {
           return errorResponse("Arquivo nao encontrado.", 404);
         }
         return handleAlbumAssetFetch(request, env, albumId, assetId);
+      }
+
+      if (pathParts.length === 5 && pathParts[3] === "assets" && request.method === "DELETE") {
+        const assetId = Number(pathParts[4]);
+        if (!assetId) {
+          return errorResponse("Arquivo nao encontrado.", 404);
+        }
+        return handleAlbumAssetDelete(request, env, albumId, assetId);
       }
     }
 

@@ -1,4 +1,5 @@
 const API_BASE = "/api";
+const ADMIN_EMAIL = "jvdiamond97";
 
 function setUserEmail(email) {
   const node = document.getElementById("userEmail");
@@ -14,11 +15,12 @@ async function fetchMe() {
 
   if (!response.ok) {
     window.location.href = "index.html";
-    return;
+    return null;
   }
 
   const data = await response.json();
   setUserEmail(data.email);
+  return data;
 }
 
 function renderCards(cards) {
@@ -120,6 +122,14 @@ async function fetchAlbums() {
   return data.albums || [];
 }
 
+let albumsCache = null;
+
+async function getAlbums() {
+  if (albumsCache) return albumsCache;
+  albumsCache = await fetchAlbums();
+  return albumsCache;
+}
+
 function populateAlbumSelect(albums) {
   const select = document.getElementById("galleryAlbum");
   if (!select) return;
@@ -136,6 +146,31 @@ function populateAlbumSelect(albums) {
     albums
       .map((album) => `<option value="${album.id}">${album.label}</option>`)
       .join("");
+}
+
+function populateAdminAlbumSelect(albums) {
+  const select = document.getElementById("adminAlbum");
+  if (!select) return;
+
+  if (!albums.length) {
+    select.innerHTML = "<option value=\"\">Sem albuns disponiveis</option>";
+    select.disabled = true;
+    return;
+  }
+
+  select.disabled = false;
+  select.innerHTML =
+    "<option value=\"\" disabled selected>Selecione um album</option>" +
+    albums
+      .map((album) => `<option value="${album.id}">${album.label}</option>`)
+      .join("");
+}
+
+function isAdminProfile(profile) {
+  if (!profile) return false;
+  const email = String(profile.email || "").toLowerCase();
+  const role = String(profile.role || "").toLowerCase();
+  return role === "admin" || email === ADMIN_EMAIL.toLowerCase();
 }
 
 let calendarState = {
@@ -283,7 +318,12 @@ async function logout() {
 
 document.addEventListener("DOMContentLoaded", () => {
   fetchMe()
-    .then(fetchDashboard)
+    .then((profile) => {
+      if (profile && isAdminProfile(profile)) {
+        initAdminGallery();
+      }
+      return fetchDashboard();
+    })
     .catch(() => {
       window.location.href = "index.html";
     });
@@ -538,7 +578,7 @@ document.addEventListener("DOMContentLoaded", () => {
       syncUi();
     };
 
-    fetchAlbums()
+    getAlbums()
       .then(populateAlbumSelect)
       .catch(() => {
         populateAlbumSelect([]);
@@ -712,3 +752,106 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+function initAdminGallery() {
+  const adminSection = document.getElementById("adminGallerySection");
+  const adminAlbumSelect = document.getElementById("adminAlbum");
+  const adminGrid = document.getElementById("adminGalleryGrid");
+  const adminStatus = document.getElementById("adminGalleryStatus");
+  const adminRefreshBtn = document.getElementById("adminRefreshBtn");
+
+  if (!adminSection || !adminAlbumSelect || !adminGrid) return;
+  adminSection.hidden = false;
+
+  let currentAlbumId = "";
+
+  const setStatus = (message) => {
+    if (adminStatus) adminStatus.textContent = message || "";
+  };
+
+  const renderAssets = (assets) => {
+    if (!adminGrid) return;
+    if (!assets.length) {
+      adminGrid.innerHTML = "<p class=\"admin-gallery-empty\">Nenhuma foto nesta galeria.</p>";
+      return;
+    }
+
+    adminGrid.innerHTML = assets
+      .map((asset) => {
+        const safeName = asset.filename || "foto";
+        return `
+          <article class="admin-gallery-card" data-id="${asset.id}">
+            <img src="${asset.url}" alt="${safeName}">
+            <div class="admin-gallery-meta">
+              <span title="${safeName}">${safeName}</span>
+              <button class="admin-gallery-delete" type="button" data-id="${asset.id}">Remover</button>
+            </div>
+          </article>
+        `;
+      })
+      .join("");
+  };
+
+  const loadAssets = async () => {
+    if (!currentAlbumId) {
+      renderAssets([]);
+      setStatus("Selecione uma galeria para visualizar.");
+      return;
+    }
+
+    setStatus("Carregando fotos...");
+    const response = await fetch(`${API_BASE}/albums/${currentAlbumId}/assets`, {
+      credentials: "include"
+    });
+    if (!response.ok) {
+      setStatus("Nao foi possivel carregar as fotos.");
+      return;
+    }
+    const data = await response.json().catch(() => ({}));
+    renderAssets(data.assets || []);
+    setStatus("");
+  };
+
+  adminAlbumSelect.addEventListener("change", () => {
+    currentAlbumId = adminAlbumSelect.value;
+    loadAssets();
+  });
+
+  if (adminRefreshBtn) {
+    adminRefreshBtn.addEventListener("click", () => {
+      loadAssets();
+    });
+  }
+
+  adminGrid.addEventListener("click", async (event) => {
+    const button = event.target.closest(".admin-gallery-delete");
+    if (!button) return;
+    if (!currentAlbumId) return;
+    const assetId = button.dataset.id;
+    if (!assetId) return;
+
+    const confirmDelete = window.confirm("Deseja remover esta foto da galeria?");
+    if (!confirmDelete) return;
+
+    button.disabled = true;
+    setStatus("Removendo foto...");
+    const response = await fetch(`${API_BASE}/albums/${currentAlbumId}/assets/${assetId}`, {
+      method: "DELETE",
+      credentials: "include"
+    });
+
+    if (!response.ok) {
+      button.disabled = false;
+      setStatus("Nao foi possivel remover a foto.");
+      return;
+    }
+
+    const card = button.closest(".admin-gallery-card");
+    if (card) card.remove();
+    setStatus("Foto removida.");
+  });
+
+  getAlbums()
+    .then(populateAdminAlbumSelect)
+    .catch(() => populateAdminAlbumSelect([]));
+}
