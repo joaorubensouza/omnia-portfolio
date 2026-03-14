@@ -66,6 +66,28 @@
       <div class="dashboard-table" id="dashboardFiles"></div>
     </section>
 
+    <section class="dashboard-upload">
+      <div class="dashboard-upload-header">
+        <h2>Enviar fotos para galerias</h2>
+        <p>As fotos enviadas aparecem automaticamente no site.</p>
+      </div>
+
+      <form class="dashboard-upload-form" id="galleryUploadForm">
+        <div class="dashboard-upload-field">
+          <label for="galleryAlbum">Album</label>
+          <select id="galleryAlbum" required></select>
+        </div>
+
+        <div class="dashboard-upload-field">
+          <label for="galleryFiles">Fotos</label>
+          <input id="galleryFiles" name="files" type="file" accept="image/*" multiple required>
+        </div>
+
+        <button class="dashboard-upload-btn" type="submit">Enviar fotos</button>
+        <p class="dashboard-upload-status" id="galleryUploadStatus" aria-live="polite"></p>
+      </form>
+    </section>
+
     <section class="dashboard-calendar">
       <aside class="calendar-sidebar">
         <div class="calendar-sidebar-header">

@@ -107,6 +107,37 @@ function renderPacks(packs) {
     .join("");
 }
 
+async function fetchAlbums() {
+  const response = await fetch(`${API_BASE}/albums`, {
+    credentials: "include"
+  });
+
+  if (!response.ok) {
+    return [];
+  }
+
+  const data = await response.json().catch(() => ({}));
+  return data.albums || [];
+}
+
+function populateAlbumSelect(albums) {
+  const select = document.getElementById("galleryAlbum");
+  if (!select) return;
+
+  if (!albums.length) {
+    select.innerHTML = "<option value=\"\">Sem albuns disponiveis</option>";
+    select.disabled = true;
+    return;
+  }
+
+  select.disabled = false;
+  select.innerHTML =
+    "<option value=\"\" disabled selected>Selecione um album</option>" +
+    albums
+      .map((album) => `<option value="${album.id}">${album.label}</option>`)
+      .join("");
+}
+
 let calendarState = {
   items: [],
   view: "month",
@@ -282,6 +313,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const viewButtons = document.querySelectorAll(".calendar-toggle-btn");
   const prevBtn = document.getElementById("calendarPrev");
   const nextBtn = document.getElementById("calendarNext");
+  const uploadForm = document.getElementById("galleryUploadForm");
+  const albumSelect = document.getElementById("galleryAlbum");
+  const fileInput = document.getElementById("galleryFiles");
+  const uploadStatus = document.getElementById("galleryUploadStatus");
 
   if (modal) {
     modal.hidden = true;
@@ -457,6 +492,57 @@ document.addEventListener("DOMContentLoaded", () => {
         calendarState.monthOffset += 1;
       }
       buildCalendar(applyFilters(calendarState.items));
+    });
+  }
+
+  if (uploadForm) {
+    fetchAlbums()
+      .then(populateAlbumSelect)
+      .catch(() => {
+        populateAlbumSelect([]);
+      });
+
+    uploadForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (uploadStatus) uploadStatus.textContent = "";
+
+      const albumId = albumSelect ? albumSelect.value : "";
+      const files = fileInput ? Array.from(fileInput.files || []) : [];
+
+      if (!albumId) {
+        if (uploadStatus) uploadStatus.textContent = "Selecione um album.";
+        return;
+      }
+
+      if (!files.length) {
+        if (uploadStatus) uploadStatus.textContent = "Selecione pelo menos uma foto.";
+        return;
+      }
+
+      const formData = new FormData();
+      files.forEach((file) => formData.append("files", file));
+
+      const response = await fetch(`${API_BASE}/albums/${albumId}/upload`, {
+        method: "POST",
+        credentials: "include",
+        body: formData
+      });
+
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        if (uploadStatus) {
+          uploadStatus.textContent = data.message || "Nao foi possivel enviar.";
+        }
+        return;
+      }
+
+      if (uploadStatus) {
+        const count = (data.assets || []).length || files.length;
+        uploadStatus.textContent = `Enviadas ${count} foto(s) com sucesso.`;
+      }
+
+      uploadForm.reset();
+      populateAlbumSelect(await fetchAlbums());
     });
   }
 

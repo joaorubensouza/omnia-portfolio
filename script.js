@@ -9,6 +9,29 @@ function closeMenu() {
   document.getElementById("sideMenu").classList.remove("open");
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  const sideNav = document.querySelector(".side-nav");
+  if (!sideNav) return;
+
+  const logoLink = document.querySelector(".logo a");
+  const homeHref = logoLink ? logoLink.getAttribute("href") : "#top";
+
+  let homeLink = sideNav.querySelector("a[data-home-link]");
+  if (!homeLink) {
+    homeLink = sideNav.querySelector('a[href="#top"], a[href$="index.html#top"]');
+  }
+
+  if (!homeLink) {
+    homeLink = document.createElement("a");
+    sideNav.prepend(homeLink);
+  }
+
+  homeLink.textContent = "Voltar ao inicio";
+  homeLink.setAttribute("href", homeHref || "#top");
+  homeLink.classList.add("menu-cta", "menu-home");
+  homeLink.setAttribute("data-home-link", "true");
+});
+
 /* =====================
    PERFORMANCE + AUTOPLAY
 ===================== */
@@ -87,12 +110,11 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* =====================
-   LIGHTBOX PORTFÓLIO
+   LIGHTBOX PORTFOLIO
 ===================== */
 document.addEventListener("DOMContentLoaded", () => {
-  const items = document.querySelectorAll(
-    ".portfolio-grid img, .portfolio-grid video"
-  );
+  const itemSelector =
+    ".portfolio-grid img, .portfolio-grid video, .gallery-grid img, .gallery-grid video";
   const lightbox = document.getElementById("lightbox");
   const imgBox = document.getElementById("lightbox-img");
   const videoBox = document.getElementById("lightbox-video");
@@ -101,22 +123,35 @@ document.addEventListener("DOMContentLoaded", () => {
   const prevBtn = document.querySelector(".prev");
   const closeBtn = document.querySelector(".close");
 
+  if (!lightbox || !imgBox || !videoBox || !nextBtn || !prevBtn || !closeBtn) {
+    return;
+  }
+
+  let items = [];
   let index = 0;
   let startX = 0;
 
-  items.forEach((item, i) => {
-    item.addEventListener("click", () => {
-      index = i;
-      openLightbox();
+  const refreshItems = () => {
+    items = Array.from(document.querySelectorAll(itemSelector));
+    items.forEach((item) => {
+      if (item.dataset.lightboxBound) return;
+      item.dataset.lightboxBound = "true";
+      item.addEventListener("click", () => {
+        items = Array.from(document.querySelectorAll(itemSelector));
+        index = items.indexOf(item);
+        openLightbox();
+      });
     });
-  });
+  };
 
   function openLightbox() {
+    if (!items.length) return;
     lightbox.style.display = "flex";
     showItem();
   }
 
   function showItem() {
+    if (!items.length) return;
     imgBox.style.display = "none";
     videoBox.style.display = "none";
     videoBox.pause();
@@ -134,11 +169,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   nextBtn.onclick = () => {
+    if (!items.length) return;
     index = (index + 1) % items.length;
     showItem();
   };
 
   prevBtn.onclick = () => {
+    if (!items.length) return;
     index = (index - 1 + items.length) % items.length;
     showItem();
   };
@@ -162,6 +199,70 @@ document.addEventListener("DOMContentLoaded", () => {
     if (startX - endX > 50) nextBtn.onclick();
     if (endX - startX > 50) prevBtn.onclick();
   });
+
+  refreshItems();
+  document.addEventListener("omnia:gallery-updated", refreshItems);
+});
+
+/* =====================
+   GALERIA DINAMICA + RODAPE
+===================== */
+document.addEventListener("DOMContentLoaded", () => {
+  const albumHost = document.querySelector("[data-album]");
+  const grid = document.querySelector(".gallery-grid, .portfolio-grid");
+
+  if (albumHost && grid) {
+    const albumId = albumHost.getAttribute("data-album");
+    if (albumId) {
+      fetch(`/api/albums/${albumId}/assets`)
+        .then((response) => (response.ok ? response.json() : null))
+        .then((data) => {
+          if (!data || !Array.isArray(data.assets)) return;
+          const existing = new Set(
+            Array.from(grid.querySelectorAll("img")).map((img) => img.src)
+          );
+          data.assets.forEach((asset) => {
+            if (!asset.url) return;
+            const resolvedUrl = new URL(asset.url, window.location.origin).toString();
+            if (existing.has(resolvedUrl)) return;
+            const img = document.createElement("img");
+            img.src = asset.url;
+            img.alt = asset.filename || "Foto";
+            img.loading = "lazy";
+            img.decoding = "async";
+            grid.appendChild(img);
+            existing.add(resolvedUrl);
+          });
+
+          if (data.assets.length) {
+            document.dispatchEvent(new Event("omnia:gallery-updated"));
+          }
+        })
+        .catch(() => {});
+    }
+  }
+
+  if (!document.querySelector(".social-footer")) {
+    const logoImg = document.querySelector(".logo img");
+    const logoSrc = logoImg ? logoImg.getAttribute("src") || "" : "";
+    const baseIndex = logoSrc.lastIndexOf("/");
+    const assetBase = baseIndex >= 0 ? logoSrc.slice(0, baseIndex + 1) : "img/";
+
+    const footer = document.createElement("footer");
+    footer.className = "social-footer";
+    footer.innerHTML = `
+      <a href="https://www.instagram.com/omnia.prod" target="_blank" rel="noopener" aria-label="Instagram">
+        <img src="${assetBase}insta.webp" alt="Instagram">
+      </a>
+      <a href="https://www.youtube.com/@omnia.prod" target="_blank" rel="noopener" aria-label="YouTube">
+        <img src="${assetBase}yt.webp" alt="YouTube">
+      </a>
+      <a href="https://www.tiktok.com/@omnia.prod" target="_blank" rel="noopener" aria-label="TikTok">
+        <img src="${assetBase}tiktok.webp" alt="TikTok">
+      </a>
+    `;
+    document.body.appendChild(footer);
+  }
 });
 
 /* =====================
