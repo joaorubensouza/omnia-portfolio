@@ -686,6 +686,43 @@ body {
   color-scheme: dark;
 }
 
+.dashboard-chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.dashboard-chip {
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.85);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.dashboard-chip[aria-checked="true"] {
+  background: rgba(241,200,107,0.18);
+  border-color: rgba(241,200,107,0.55);
+  color: #fff;
+}
+
+.dashboard-chip:focus-visible {
+  outline: 2px solid rgba(241,200,107,0.65);
+  outline-offset: 2px;
+}
+
+.dashboard-chip:hover {
+  transform: translateY(-1px);
+  background: rgba(255,255,255,0.09);
+}
+
+#youtubeCategory,
+#adminVideoCategory {
+  display: none;
+}
+
 .dashboard-upload-btn {
   align-self: flex-start;
   padding: 10px 20px;
@@ -761,6 +798,26 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+}
+
+.admin-cardlabels-preview {
+  width: 100%;
+  height: 150px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.25);
+}
+
+.admin-cardlabels-preview-media {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.admin-cardlabels-media input {
+  width: 100%;
 }
 
 @media (max-width: 720px) {

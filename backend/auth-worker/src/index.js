@@ -882,7 +882,7 @@ async function handleSiteCardsList(request, env) {
   let rows;
   try {
     rows = await env.DB.prepare(
-      `SELECT area, card_id, title, subtitle, updated_at
+      `SELECT area, card_id, title, subtitle, media_url, updated_at
        FROM site_cards
        ORDER BY area ASC, card_id ASC`
     ).all();
@@ -907,6 +907,13 @@ function normalizeSiteCardText(value, maxLen) {
   return text.slice(0, maxLen);
 }
 
+function normalizeMediaUrl(value) {
+  const url = String(value || "").trim();
+  if (!url) return null;
+  if (url.toLowerCase().startsWith("javascript:")) return null;
+  return url.slice(0, 500);
+}
+
 async function handleSiteCardUpsert(request, env) {
   const session = await getSessionUser(request, env);
   if (!isAdminSession(session)) {
@@ -922,6 +929,7 @@ async function handleSiteCardUpsert(request, env) {
   const cardId = normalizeSiteCardKey(body.card_id);
   const title = normalizeSiteCardText(body.title, 80);
   const subtitle = normalizeSiteCardText(body.subtitle, 120);
+  const mediaUrl = normalizeMediaUrl(body.media_url);
 
   if (!area || !cardId || !title) {
     return errorResponse("Dados incompletos.", 400);
@@ -929,14 +937,15 @@ async function handleSiteCardUpsert(request, env) {
 
   try {
     await env.DB.prepare(
-      `INSERT INTO site_cards (area, card_id, title, subtitle, updated_at)
-       VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+      `INSERT INTO site_cards (area, card_id, title, subtitle, media_url, updated_at)
+       VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
        ON CONFLICT(area, card_id) DO UPDATE SET
          title = excluded.title,
          subtitle = excluded.subtitle,
+         media_url = excluded.media_url,
          updated_at = CURRENT_TIMESTAMP`
     )
-      .bind(area, cardId, title, subtitle)
+      .bind(area, cardId, title, subtitle, mediaUrl)
       .run();
   } catch (err) {
     return errorResponse("Nao foi possivel salvar.", 500);

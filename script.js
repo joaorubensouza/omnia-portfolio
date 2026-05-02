@@ -250,6 +250,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const cards = (data && Array.isArray(data.cards) ? data.cards : []).filter(Boolean);
         if (!cards.length) return;
 
+        const normalizeAssetUrl = (value) => {
+          const url = String(value || "").trim();
+          if (!url) return "";
+          if (url.startsWith("/") || url.startsWith("//") || url.includes("://")) return url;
+          return `/${url.replace(/^\\/+/, "")}`;
+        };
+
         cards.forEach((card) => {
           const selector = `[data-site-card=\"${card.area}:${card.card_id}\"]`;
           const node = document.querySelector(selector);
@@ -266,6 +273,28 @@ document.addEventListener("DOMContentLoaded", () => {
               subtitleNode.textContent = card.subtitle;
             } else if (subtitleNode.textContent) {
               // keep existing subtitle if not configured
+            }
+          }
+
+          if (card.media_url) {
+            const mediaUrl = normalizeAssetUrl(card.media_url);
+            if (!mediaUrl) return;
+
+            const image = node.querySelector("img");
+            if (image) {
+              image.src = mediaUrl;
+            }
+
+            const video = node.querySelector("video");
+            if (video) {
+              const source = video.querySelector("source");
+              if (source) {
+                source.src = mediaUrl;
+              } else {
+                video.src = mediaUrl;
+              }
+              video.load();
+              video.play().catch(() => {});
             }
           }
         });

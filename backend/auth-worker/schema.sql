@@ -97,6 +97,7 @@ CREATE TABLE IF NOT EXISTS site_cards (
   card_id TEXT NOT NULL,
   title TEXT NOT NULL,
   subtitle TEXT,
+  media_url TEXT,
   updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (area, card_id)
 );

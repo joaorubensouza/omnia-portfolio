@@ -210,6 +210,8 @@ function populateVideoCategorySelect(categories) {
     categories
       .map((category) => `<option value="${category.id}">${category.label}</option>`)
       .join("");
+
+  renderCategoryChips("youtubeCategoryChips", select, categories);
 }
 
 function populateAdminAlbumSelect(albums) {
@@ -246,6 +248,77 @@ function populateAdminVideoCategorySelect(categories) {
     categories
       .map((category) => `<option value="${category.id}">${category.label}</option>`)
       .join("");
+
+  renderCategoryChips("adminVideoCategoryChips", select, categories);
+}
+
+function renderCategoryChips(containerId, select, categories) {
+  const container = document.getElementById(containerId);
+  if (!container || !select) return;
+
+  container.innerHTML = "";
+
+  if (!categories.length) {
+    const empty = document.createElement("span");
+    empty.className = "admin-muted";
+    empty.textContent = "Sem categorias disponiveis.";
+    container.appendChild(empty);
+    return;
+  }
+
+  const buttons = categories.map((category, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "dashboard-chip";
+    button.setAttribute("role", "radio");
+    button.setAttribute("aria-checked", "false");
+    button.tabIndex = index === 0 ? 0 : -1;
+    button.dataset.value = category.id;
+    button.textContent = category.label;
+    return button;
+  });
+
+  const setSelected = (value) => {
+    const targetValue = String(value || "");
+    select.value = targetValue;
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+
+    buttons.forEach((button) => {
+      const isSelected = button.dataset.value === targetValue;
+      button.setAttribute("aria-checked", isSelected ? "true" : "false");
+      button.tabIndex = isSelected ? 0 : -1;
+    });
+  };
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      setSelected(button.dataset.value);
+      button.focus();
+    });
+
+    button.addEventListener("keydown", (event) => {
+      if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) return;
+      event.preventDefault();
+      const currentIndex = buttons.indexOf(button);
+      if (currentIndex === -1) return;
+      const delta = event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : 1;
+      const nextIndex = (currentIndex + delta + buttons.length) % buttons.length;
+      const nextButton = buttons[nextIndex];
+      if (nextButton) {
+        setSelected(nextButton.dataset.value);
+        nextButton.focus();
+      }
+    });
+  });
+
+  buttons.forEach((button) => container.appendChild(button));
+
+  if (select.value) {
+    setSelected(select.value);
+  } else {
+    const checked = buttons.find((button) => button.getAttribute("aria-checked") === "true");
+    if (checked) setSelected(checked.dataset.value);
+  }
 }
 
 function isAdminProfile(profile) {
@@ -1052,6 +1125,7 @@ function initAdminCardLabels() {
         label: "Fotografia: Comerciais",
         defaultTitle: "Comerciais",
         defaultSubtitle: "Impacto & Conversao",
+        defaultMedia: "/img/_DSC10.png",
         subtitleEnabled: true
       },
       {
@@ -1059,6 +1133,7 @@ function initAdminCardLabels() {
         label: "Fotografia: Producoes Fotograficas",
         defaultTitle: "Producoes Fotograficas",
         defaultSubtitle: "Narrativa Visual",
+        defaultMedia: "/img/_DSC9.png",
         subtitleEnabled: true
       },
       {
@@ -1066,6 +1141,7 @@ function initAdminCardLabels() {
         label: "Fotografia: Drone",
         defaultTitle: "Drone",
         defaultSubtitle: "Captacao Aerea",
+        defaultMedia: "/img/_DSC11.png",
         subtitleEnabled: true
       }
     ],
@@ -1074,18 +1150,21 @@ function initAdminCardLabels() {
         card_id: "comerciais",
         label: "Audiovisual: Comerciais",
         defaultTitle: "Comerciais",
+        defaultMedia: "/videos/Judo  Sfoa - Mais Novos.mp4",
         subtitleEnabled: false
       },
       {
         card_id: "cinematografica",
         label: "Audiovisual: Producoes Cinematograficas",
         defaultTitle: "Producoes Cinematograficas",
+        defaultMedia: "/videos/TerceiraSegur - Artes Marciais.mp4",
         subtitleEnabled: false
       },
       {
         card_id: "drone",
         label: "Audiovisual: Drone",
         defaultTitle: "Drone",
+        defaultMedia: "/videos/Drone Site.mp4",
         subtitleEnabled: false
       }
     ]
@@ -1107,6 +1186,29 @@ function initAdminCardLabels() {
     field.appendChild(label);
     field.appendChild(input);
     return { field, input };
+  };
+
+  const resolveMediaValue = (value, fallback) => {
+    const trimmed = String(value || "").trim();
+    if (trimmed) return trimmed;
+    return fallback || "";
+  };
+
+  const updatePreview = (previewNode, area, url) => {
+    if (!previewNode) return;
+    const value = String(url || "").trim();
+    if (!value) return;
+
+    if (area === "fotografia") {
+      previewNode.src = value;
+      return;
+    }
+
+    const source = previewNode.querySelector("source");
+    if (!source) return;
+    source.src = value;
+    previewNode.load();
+    previewNode.play().catch(() => {});
   };
 
   const render = () => {
@@ -1142,6 +1244,38 @@ function initAdminCardLabels() {
           : def.defaultSubtitle != null
             ? def.defaultSubtitle
             : "";
+      const mediaValue = resolveMediaValue(saved.media_url, def.defaultMedia);
+
+      const previewWrap = document.createElement("div");
+      previewWrap.className = "admin-cardlabels-preview";
+
+      let previewMedia = null;
+      if (area === "fotografia") {
+        previewMedia = document.createElement("img");
+        previewMedia.alt = def.label;
+        previewMedia.loading = "lazy";
+        previewMedia.decoding = "async";
+      } else {
+        previewMedia = document.createElement("video");
+        previewMedia.muted = true;
+        previewMedia.defaultMuted = true;
+        previewMedia.setAttribute("muted", "");
+        previewMedia.autoplay = true;
+        previewMedia.loop = true;
+        previewMedia.setAttribute("playsinline", "");
+        previewMedia.setAttribute("webkit-playsinline", "");
+        previewMedia.preload = "metadata";
+        const source = document.createElement("source");
+        source.type = "video/mp4";
+        previewMedia.appendChild(source);
+      }
+
+      if (previewMedia) {
+        previewMedia.className = "admin-cardlabels-preview-media";
+        previewWrap.appendChild(previewMedia);
+        item.appendChild(previewWrap);
+        updatePreview(previewMedia, area, mediaValue);
+      }
 
       const { field: titleField, input: titleInput } = buildField("Titulo");
       titleInput.className = "admin-card-title";
@@ -1163,6 +1297,21 @@ function initAdminCardLabels() {
       fields.appendChild(subtitleField);
 
       item.appendChild(fields);
+
+      const { field: mediaField, input: mediaInput } = buildField("Midia (URL)");
+      mediaInput.className = "admin-card-media";
+      mediaInput.maxLength = 500;
+      mediaInput.value = saved.media_url ? String(saved.media_url) : "";
+      mediaInput.placeholder = def.defaultMedia || "/img/...";
+      mediaInput.inputMode = "url";
+      mediaField.classList.add("admin-cardlabels-media");
+      item.appendChild(mediaField);
+
+      mediaInput.addEventListener("input", () => {
+        const value = resolveMediaValue(mediaInput.value, def.defaultMedia);
+        updatePreview(previewMedia, area, value);
+      });
+
       grid.appendChild(item);
     });
   };
@@ -1199,8 +1348,10 @@ function initAdminCardLabels() {
       if (!row) continue;
       const titleInput = row.querySelector(".admin-card-title");
       const subtitleInput = row.querySelector(".admin-card-subtitle");
+      const mediaInput = row.querySelector(".admin-card-media");
       const title = titleInput ? String(titleInput.value || "").trim() : "";
       const subtitle = subtitleInput ? String(subtitleInput.value || "").trim() : "";
+      const mediaUrl = mediaInput ? String(mediaInput.value || "").trim() : "";
 
       if (!title) {
         setStatus("Preencha todos os titulos antes de salvar.");
@@ -1211,7 +1362,8 @@ function initAdminCardLabels() {
         area,
         card_id: def.card_id,
         title,
-        subtitle: def.subtitleEnabled ? (subtitle || null) : null
+        subtitle: def.subtitleEnabled ? (subtitle || null) : null,
+        media_url: mediaUrl || null
       };
 
       const result = await saveSiteCard(payload);
