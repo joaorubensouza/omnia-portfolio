@@ -682,6 +682,10 @@ body {
   color: #fff;
 }
 
+.dashboard-upload-field select {
+  color-scheme: dark;
+}
+
 .dashboard-upload-btn {
   align-self: flex-start;
   padding: 10px 20px;
