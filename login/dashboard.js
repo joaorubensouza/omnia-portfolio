@@ -151,6 +151,31 @@ async function getVideoCategories() {
   return videoCategoriesCache;
 }
 
+async function fetchSiteCards() {
+  const response = await fetch(`${API_BASE}/site-cards`, {
+    credentials: "include"
+  });
+
+  if (!response.ok) {
+    return [];
+  }
+
+  const data = await response.json().catch(() => ({}));
+  return data.cards || [];
+}
+
+async function saveSiteCard(payload) {
+  const response = await fetch(`${API_BASE}/site-cards`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+
+  const data = await response.json().catch(() => ({}));
+  return { ok: response.ok, data };
+}
+
 function populateAlbumSelect(albums) {
   const select = document.getElementById("galleryAlbum");
   if (!select) return;
@@ -383,6 +408,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (profile && isAdminProfile(profile)) {
         initAdminGallery();
         initAdminVideos();
+        initAdminCardLabels();
       }
       return fetchDashboard();
     })
@@ -1006,6 +1032,200 @@ function initAdminVideos() {
   getVideoCategories()
     .then(populateAdminVideoCategorySelect)
     .catch(() => populateAdminVideoCategorySelect([]));
+}
+
+function initAdminCardLabels() {
+  const section = document.getElementById("adminCardLabelsSection");
+  const form = document.getElementById("adminCardLabelsForm");
+  const areaSelect = document.getElementById("adminCardArea");
+  const grid = document.getElementById("adminCardLabelsGrid");
+  const status = document.getElementById("adminCardLabelsStatus");
+  const refreshBtn = document.getElementById("adminCardLabelsRefreshBtn");
+
+  if (!section || !form || !areaSelect || !grid) return;
+  section.hidden = false;
+
+  const CARD_DEFS = {
+    fotografia: [
+      {
+        card_id: "comerciais",
+        label: "Fotografia: Comerciais",
+        defaultTitle: "Comerciais",
+        defaultSubtitle: "Impacto & Conversao",
+        subtitleEnabled: true
+      },
+      {
+        card_id: "producoes",
+        label: "Fotografia: Producoes Fotograficas",
+        defaultTitle: "Producoes Fotograficas",
+        defaultSubtitle: "Narrativa Visual",
+        subtitleEnabled: true
+      },
+      {
+        card_id: "drone",
+        label: "Fotografia: Drone",
+        defaultTitle: "Drone",
+        defaultSubtitle: "Captacao Aerea",
+        subtitleEnabled: true
+      }
+    ],
+    audiovisual: [
+      {
+        card_id: "comerciais",
+        label: "Audiovisual: Comerciais",
+        defaultTitle: "Comerciais",
+        subtitleEnabled: false
+      },
+      {
+        card_id: "cinematografica",
+        label: "Audiovisual: Producoes Cinematograficas",
+        defaultTitle: "Producoes Cinematograficas",
+        subtitleEnabled: false
+      },
+      {
+        card_id: "drone",
+        label: "Audiovisual: Drone",
+        defaultTitle: "Drone",
+        subtitleEnabled: false
+      }
+    ]
+  };
+
+  let cardsCache = [];
+
+  const setStatus = (message) => {
+    if (status) status.textContent = message || "";
+  };
+
+  const buildField = (labelText) => {
+    const field = document.createElement("div");
+    field.className = "dashboard-upload-field";
+    const label = document.createElement("label");
+    label.textContent = labelText;
+    const input = document.createElement("input");
+    input.type = "text";
+    field.appendChild(label);
+    field.appendChild(input);
+    return { field, input };
+  };
+
+  const render = () => {
+    const area = areaSelect.value || "fotografia";
+    const defs = CARD_DEFS[area] || [];
+    const byKey = new Map();
+    cardsCache.forEach((card) => {
+      if (!card || !card.area || !card.card_id) return;
+      byKey.set(`${card.area}:${card.card_id}`, card);
+    });
+
+    grid.innerHTML = "";
+
+    defs.forEach((def) => {
+      const item = document.createElement("div");
+      item.className = "admin-cardlabels-item";
+      item.dataset.area = area;
+      item.dataset.cardId = def.card_id;
+
+      const header = document.createElement("div");
+      header.className = "admin-cardlabels-item-header";
+      header.textContent = def.label;
+      item.appendChild(header);
+
+      const fields = document.createElement("div");
+      fields.className = "admin-cardlabels-fields";
+
+      const saved = byKey.get(`${area}:${def.card_id}`) || {};
+      const titleValue = saved.title || def.defaultTitle || "";
+      const subtitleValue =
+        saved.subtitle != null
+          ? saved.subtitle
+          : def.defaultSubtitle != null
+            ? def.defaultSubtitle
+            : "";
+
+      const { field: titleField, input: titleInput } = buildField("Titulo");
+      titleInput.className = "admin-card-title";
+      titleInput.maxLength = 80;
+      titleInput.value = titleValue;
+      titleInput.required = true;
+      fields.appendChild(titleField);
+
+      const { field: subtitleField, input: subtitleInput } = buildField("Subtitulo");
+      subtitleInput.className = "admin-card-subtitle";
+      subtitleInput.maxLength = 120;
+      subtitleInput.value = subtitleValue || "";
+      if (!def.subtitleEnabled) {
+        subtitleInput.disabled = true;
+        subtitleInput.placeholder = "Nao usado nesta area";
+      } else {
+        subtitleInput.placeholder = "Opcional";
+      }
+      fields.appendChild(subtitleField);
+
+      item.appendChild(fields);
+      grid.appendChild(item);
+    });
+  };
+
+  const loadCards = async () => {
+    setStatus("Carregando configuracoes...");
+    cardsCache = await fetchSiteCards();
+    render();
+    setStatus("");
+  };
+
+  areaSelect.addEventListener("change", () => {
+    render();
+  });
+
+  if (refreshBtn) {
+    refreshBtn.addEventListener("click", () => {
+      loadCards();
+    });
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const area = areaSelect.value || "fotografia";
+    const defs = CARD_DEFS[area] || [];
+    if (!defs.length) return;
+
+    setStatus("Salvando...");
+
+    for (const def of defs) {
+      const row = grid.querySelector(
+        `.admin-cardlabels-item[data-area="${area}"][data-card-id="${def.card_id}"]`
+      );
+      if (!row) continue;
+      const titleInput = row.querySelector(".admin-card-title");
+      const subtitleInput = row.querySelector(".admin-card-subtitle");
+      const title = titleInput ? String(titleInput.value || "").trim() : "";
+      const subtitle = subtitleInput ? String(subtitleInput.value || "").trim() : "";
+
+      if (!title) {
+        setStatus("Preencha todos os titulos antes de salvar.");
+        return;
+      }
+
+      const payload = {
+        area,
+        card_id: def.card_id,
+        title,
+        subtitle: def.subtitleEnabled ? (subtitle || null) : null
+      };
+
+      const result = await saveSiteCard(payload);
+      if (!result.ok) {
+        setStatus(result.data.message || "Nao foi possivel salvar.");
+        return;
+      }
+    }
+
+    setStatus("Salvo com sucesso.");
+    await loadCards();
+  });
+
+  loadCards();
 }
 
 function initAdminGallery() {

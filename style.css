@@ -677,6 +677,11 @@ body {
   padding: 10px 12px;
 }
 
+.dashboard-upload-field select option {
+  background: #111;
+  color: #fff;
+}
+
 .dashboard-upload-btn {
   align-self: flex-start;
   padding: 10px 20px;
@@ -727,6 +732,37 @@ body {
   align-items: flex-end;
   justify-content: space-between;
   gap: 14px;
+}
+
+.admin-cardlabels-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.admin-cardlabels-item {
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.03);
+  border-radius: 16px;
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.admin-cardlabels-item-header {
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+}
+
+.admin-cardlabels-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 720px) {
+  .admin-cardlabels-fields {
+    grid-template-columns: 1fr;
+  }
 }
 
 .admin-gallery-grid,

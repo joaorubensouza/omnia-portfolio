@@ -878,6 +878,74 @@ async function handleVideoItemDelete(request, env, categoryId, videoId) {
   return jsonResponse({ ok: true }, 200, headers);
 }
 
+async function handleSiteCardsList(request, env) {
+  let rows;
+  try {
+    rows = await env.DB.prepare(
+      `SELECT area, card_id, title, subtitle, updated_at
+       FROM site_cards
+       ORDER BY area ASC, card_id ASC`
+    ).all();
+  } catch (err) {
+    rows = { results: [] };
+  }
+
+  const headers = addCorsHeaders(request, {}, env);
+  headers["Cache-Control"] = "no-store";
+  return jsonResponse({ cards: rows.results || [] }, 200, headers);
+}
+
+function normalizeSiteCardKey(value) {
+  const normalized = String(value || "").trim().toLowerCase();
+  if (!normalized) return null;
+  return /^[a-z0-9_-]+$/.test(normalized) ? normalized : null;
+}
+
+function normalizeSiteCardText(value, maxLen) {
+  const text = String(value || "").trim();
+  if (!text) return null;
+  return text.slice(0, maxLen);
+}
+
+async function handleSiteCardUpsert(request, env) {
+  const session = await getSessionUser(request, env);
+  if (!isAdminSession(session)) {
+    return errorResponse("Nao autorizado.", 401);
+  }
+
+  const body = await request.json().catch(() => null);
+  if (!body) {
+    return errorResponse("Dados incompletos.", 400);
+  }
+
+  const area = normalizeSiteCardKey(body.area);
+  const cardId = normalizeSiteCardKey(body.card_id);
+  const title = normalizeSiteCardText(body.title, 80);
+  const subtitle = normalizeSiteCardText(body.subtitle, 120);
+
+  if (!area || !cardId || !title) {
+    return errorResponse("Dados incompletos.", 400);
+  }
+
+  try {
+    await env.DB.prepare(
+      `INSERT INTO site_cards (area, card_id, title, subtitle, updated_at)
+       VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+       ON CONFLICT(area, card_id) DO UPDATE SET
+         title = excluded.title,
+         subtitle = excluded.subtitle,
+         updated_at = CURRENT_TIMESTAMP`
+    )
+      .bind(area, cardId, title, subtitle)
+      .run();
+  } catch (err) {
+    return errorResponse("Nao foi possivel salvar.", 500);
+  }
+
+  const headers = addCorsHeaders(request, {}, env);
+  return jsonResponse({ ok: true }, 200, headers);
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -949,6 +1017,16 @@ export default {
           return errorResponse("Video nao encontrado.", 404);
         }
         return handleVideoItemDelete(request, env, categoryId, videoId);
+      }
+    }
+
+    if (pathParts[0] === "api" && pathParts[1] === "site-cards") {
+      if (pathParts.length === 2 && request.method === "GET") {
+        return handleSiteCardsList(request, env);
+      }
+
+      if (pathParts.length === 2 && request.method === "POST") {
+        return handleSiteCardUpsert(request, env);
       }
     }
 

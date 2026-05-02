@@ -153,6 +153,31 @@
       <div class="admin-video-grid" id="adminVideoGrid"></div>
     </section>
 
+    <section class="dashboard-admin" id="adminCardLabelsSection" hidden>
+      <div class="dashboard-upload-header">
+        <h2>Editar cards de categorias (Admin)</h2>
+        <p>Altere os nomes exibidos nos cards de Fotografia e Producao Audiovisual.</p>
+      </div>
+
+      <form class="dashboard-upload-form" id="adminCardLabelsForm">
+        <div class="dashboard-admin-controls">
+          <div class="dashboard-upload-field">
+            <label for="adminCardArea">Area</label>
+            <select id="adminCardArea">
+              <option value="fotografia">Fotografia</option>
+              <option value="audiovisual">Producao Audiovisual</option>
+            </select>
+          </div>
+          <button class="dashboard-upload-btn" id="adminCardLabelsRefreshBtn" type="button">Carregar</button>
+        </div>
+
+        <div class="admin-cardlabels-grid" id="adminCardLabelsGrid"></div>
+
+        <button class="dashboard-upload-btn" id="adminCardLabelsSaveBtn" type="submit">Salvar alteracoes</button>
+        <p class="dashboard-upload-status" id="adminCardLabelsStatus" aria-live="polite"></p>
+      </form>
+    </section>
+
     <section class="dashboard-calendar">
       <aside class="calendar-sidebar">
         <div class="calendar-sidebar-header">

@@ -91,3 +91,12 @@ CREATE INDEX IF NOT EXISTS idx_youtube_videos_category
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_youtube_videos_unique
   ON youtube_videos (category_id, youtube_id);
+
+CREATE TABLE IF NOT EXISTS site_cards (
+  area TEXT NOT NULL,
+  card_id TEXT NOT NULL,
+  title TEXT NOT NULL,
+  subtitle TEXT,
+  updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (area, card_id)
+);

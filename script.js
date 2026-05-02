@@ -242,6 +242,37 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  const cardsHost = document.querySelector("[data-card-area]");
+  if (cardsHost) {
+    fetch("/api/site-cards")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        const cards = (data && Array.isArray(data.cards) ? data.cards : []).filter(Boolean);
+        if (!cards.length) return;
+
+        cards.forEach((card) => {
+          const selector = `[data-site-card=\"${card.area}:${card.card_id}\"]`;
+          const node = document.querySelector(selector);
+          if (!node) return;
+
+          const titleNode = node.querySelector("h3");
+          if (titleNode && card.title) {
+            titleNode.textContent = card.title;
+          }
+
+          const subtitleNode = node.querySelector("p");
+          if (subtitleNode) {
+            if (card.subtitle) {
+              subtitleNode.textContent = card.subtitle;
+            } else if (subtitleNode.textContent) {
+              // keep existing subtitle if not configured
+            }
+          }
+        });
+      })
+      .catch(() => {});
+  }
+
   const videoHost = document.querySelector("[data-video-category]");
   const videoGrid = document.querySelector(".video-gallery-grid");
 
@@ -497,30 +528,6 @@ document.querySelectorAll("a").forEach((link) => {
 
     if (!href || href === "#") return;
     if (link.target === "_blank" || link.hasAttribute("download")) return;
-
-    const isCardLink =
-      link.classList.contains("card-link") &&
-      link.closest(".audiovisual-cards-section");
-
-    if (isCardLink && window.innerWidth < 768) {
-      const now = Date.now();
-      const lastTap = Number(link.dataset.lastTap || 0);
-
-      if (now - lastTap > 450) {
-        link.dataset.lastTap = String(now);
-        const card = link.querySelector(".card-3d");
-        if (card) {
-          document
-            .querySelectorAll(".audiovisual-cards-section .card-3d")
-            .forEach((c) => c.classList.remove("active"));
-          card.classList.add("active");
-        }
-        e.preventDefault();
-        return;
-      }
-
-      link.dataset.lastTap = "";
-    }
 
     const isSameOrigin = link.origin === window.location.origin;
     const isSamePath = link.pathname === window.location.pathname;
