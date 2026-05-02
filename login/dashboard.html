@@ -94,6 +94,33 @@
       </form>
     </section>
 
+    <section class="dashboard-upload" id="youtubeUploadSection">
+      <div class="dashboard-upload-header">
+        <h2>Enviar videos do YouTube</h2>
+        <p>Os videos adicionados aparecem automaticamente nas galerias de Producao Audiovisual.</p>
+      </div>
+
+      <form class="dashboard-upload-form" id="youtubeUploadForm">
+        <div class="dashboard-upload-field">
+          <label for="youtubeUrl">Link do YouTube</label>
+          <input id="youtubeUrl" type="url" inputmode="url" placeholder="https://www.youtube.com/watch?v=..." required>
+        </div>
+
+        <div class="dashboard-upload-field">
+          <label for="youtubeTitle">Titulo (opcional)</label>
+          <input id="youtubeTitle" type="text" maxlength="120" placeholder="Nome do video">
+        </div>
+
+        <div class="dashboard-upload-field">
+          <label for="youtubeCategory">Categoria</label>
+          <select id="youtubeCategory" required></select>
+        </div>
+
+        <button class="dashboard-upload-btn" id="youtubeUploadBtn" type="submit">Adicionar video</button>
+        <p class="dashboard-upload-status" id="youtubeUploadStatus" aria-live="polite"></p>
+      </form>
+    </section>
+
     <section class="dashboard-admin" id="adminGallerySection" hidden>
       <div class="dashboard-upload-header">
         <h2>Gerenciar galerias (Admin)</h2>
@@ -108,6 +135,22 @@
       </div>
       <p class="dashboard-upload-status" id="adminGalleryStatus" aria-live="polite"></p>
       <div class="admin-gallery-grid" id="adminGalleryGrid"></div>
+    </section>
+
+    <section class="dashboard-admin" id="adminVideoSection" hidden>
+      <div class="dashboard-upload-header">
+        <h2>Gerenciar videos (Admin)</h2>
+        <p>Visualize e remova videos adicionados por engano.</p>
+      </div>
+      <div class="dashboard-admin-controls">
+        <div class="dashboard-upload-field">
+          <label for="adminVideoCategory">Categoria</label>
+          <select id="adminVideoCategory"></select>
+        </div>
+        <button class="dashboard-upload-btn" id="adminVideoRefreshBtn" type="button">Atualizar lista</button>
+      </div>
+      <p class="dashboard-upload-status" id="adminVideoStatus" aria-live="polite"></p>
+      <div class="admin-video-grid" id="adminVideoGrid"></div>
     </section>
 
     <section class="dashboard-calendar">

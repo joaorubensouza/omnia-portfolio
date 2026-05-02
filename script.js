@@ -242,6 +242,50 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  const videoHost = document.querySelector("[data-video-category]");
+  const videoGrid = document.querySelector(".video-gallery-grid");
+
+  if (videoHost && videoGrid) {
+    const categoryId = videoHost.getAttribute("data-video-category");
+    if (categoryId) {
+      fetch(`/api/videos/${categoryId}/items`)
+        .then((response) => (response.ok ? response.json() : null))
+        .then((data) => {
+          if (!data || !Array.isArray(data.videos) || !data.videos.length) return;
+
+          const existingIds = new Set();
+          videoGrid.querySelectorAll("iframe").forEach((iframe) => {
+            const match = String(iframe.src || "").match(/\/embed\/([a-zA-Z0-9_-]{11})/);
+            if (match && match[1]) existingIds.add(match[1]);
+          });
+
+          const empty = videoGrid.querySelector(".video-gallery-empty");
+          if (empty) empty.remove();
+
+          data.videos.forEach((video) => {
+            const embedUrl =
+              video.embed_url || `https://www.youtube.com/embed/${video.youtube_id}`;
+            if (video.youtube_id && existingIds.has(video.youtube_id)) return;
+            const title = video.title || "Video";
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "video-embed";
+
+            const iframe = document.createElement("iframe");
+            iframe.src = embedUrl;
+            iframe.title = title;
+            iframe.allow =
+              "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+            iframe.setAttribute("allowfullscreen", "");
+            wrapper.appendChild(iframe);
+            videoGrid.appendChild(wrapper);
+            if (video.youtube_id) existingIds.add(video.youtube_id);
+          });
+        })
+        .catch(() => {});
+    }
+  }
+
   if (!document.querySelector(".social-footer")) {
     const logoImg = document.querySelector(".logo img");
     const logoSrc = logoImg ? logoImg.getAttribute("src") || "" : "";

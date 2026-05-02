@@ -10,6 +10,12 @@ const ALBUMS = [
   { id: "comerciais-foto", label: "Comerciais" }
 ];
 
+const VIDEO_CATEGORIES = [
+  { id: "comerciais", label: "Comerciais" },
+  { id: "cinematografica", label: "Producoes Cinematograficas" },
+  { id: "drone", label: "Drone" }
+];
+
 const MAX_UPLOAD_FILES = 50;
 const MAX_UPLOAD_BYTES = 12 * 1024 * 1024;
 const ADMIN_EMAIL = "jvdiamond97";
@@ -37,6 +43,10 @@ function parseCookies(cookieHeader) {
 
 function getAlbumById(albumId) {
   return ALBUMS.find((album) => album.id === albumId);
+}
+
+function getVideoCategoryById(categoryId) {
+  return VIDEO_CATEGORIES.find((category) => category.id === categoryId);
 }
 
 function sanitizeFilename(name) {
@@ -131,6 +141,52 @@ function isAdminSession(session) {
   const email = String(session.email || "").toLowerCase();
   const role = String(session.role || "").toLowerCase();
   return role === "admin" || matchesAdminEmail(email);
+}
+
+function extractYouTubeId(input) {
+  const value = String(input || "").trim();
+  if (!value) return null;
+
+  if (/^[a-zA-Z0-9_-]{11}$/.test(value)) {
+    return value;
+  }
+
+  let url;
+  try {
+    url = new URL(value);
+  } catch (err) {
+    return null;
+  }
+
+  const host = url.hostname.replace(/^www\./, "").toLowerCase();
+
+  if (host === "youtu.be") {
+    const id = url.pathname.split("/").filter(Boolean)[0];
+    return id && /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : null;
+  }
+
+  if (
+    host === "youtube.com" ||
+    host.endsWith(".youtube.com") ||
+    host === "youtube-nocookie.com" ||
+    host.endsWith(".youtube-nocookie.com")
+  ) {
+    const byQuery = url.searchParams.get("v");
+    if (byQuery && /^[a-zA-Z0-9_-]{11}$/.test(byQuery)) {
+      return byQuery;
+    }
+
+    const parts = url.pathname.split("/").filter(Boolean);
+    const embedIndex = parts.findIndex((part) =>
+      ["embed", "shorts", "live"].includes(part)
+    );
+    if (embedIndex >= 0 && parts[embedIndex + 1]) {
+      const id = parts[embedIndex + 1];
+      return /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : null;
+    }
+  }
+
+  return null;
 }
 
 async function getUserIdByEmail(env, email) {
@@ -690,6 +746,138 @@ async function handleAlbumAssetDelete(request, env, albumId, assetId) {
   return jsonResponse({ ok: true }, 200, headers);
 }
 
+async function handleVideoCategoriesList(request, env) {
+  const headers = addCorsHeaders(request, {}, env);
+  return jsonResponse({ categories: VIDEO_CATEGORIES }, 200, headers);
+}
+
+function buildYouTubeEmbedUrl(youtubeId) {
+  return `https://www.youtube.com/embed/${youtubeId}`;
+}
+
+async function handleVideoItemsList(request, env, categoryId) {
+  const category = getVideoCategoryById(categoryId);
+  if (!category) {
+    return errorResponse("Categoria nao encontrada.", 404);
+  }
+
+  let rows;
+  try {
+    rows = await env.DB.prepare(
+      `SELECT id, youtube_id, title, created_at
+       FROM youtube_videos
+       WHERE category_id = ?
+       ORDER BY created_at DESC`
+    )
+      .bind(categoryId)
+      .all();
+  } catch (err) {
+    rows = { results: [] };
+  }
+
+  const videos = (rows.results || []).map((row) => ({
+    id: row.id,
+    youtube_id: row.youtube_id,
+    title: row.title || null,
+    created_at: row.created_at,
+    embed_url: buildYouTubeEmbedUrl(row.youtube_id),
+    watch_url: `https://www.youtube.com/watch?v=${row.youtube_id}`
+  }));
+
+  const headers = addCorsHeaders(request, {}, env);
+  headers["Cache-Control"] = "no-store";
+  return jsonResponse({ category, videos }, 200, headers);
+}
+
+async function handleVideoItemCreate(request, env, categoryId) {
+  const category = getVideoCategoryById(categoryId);
+  if (!category) {
+    return errorResponse("Categoria nao encontrada.", 404);
+  }
+
+  const session = await getSessionUser(request, env);
+  if (!session) {
+    return errorResponse("Nao autorizado.", 401);
+  }
+
+  const body = await request.json().catch(() => null);
+  if (!body || !body.url) {
+    return errorResponse("Dados incompletos.", 400);
+  }
+
+  const youtubeId = extractYouTubeId(body.url);
+  if (!youtubeId) {
+    return errorResponse("Link do YouTube invalido.", 400);
+  }
+
+  const title = body.title ? String(body.title).trim().slice(0, 120) : null;
+
+  let result;
+  try {
+    result = await env.DB.prepare(
+      `INSERT INTO youtube_videos
+        (user_id, category_id, youtube_id, original_url, title)
+        VALUES (?, ?, ?, ?, ?)`
+    )
+      .bind(session.id, categoryId, youtubeId, String(body.url).trim(), title)
+      .run();
+  } catch (err) {
+    const message = String(err && err.message ? err.message : err);
+    if (message.includes("UNIQUE") || message.includes("unique")) {
+      return errorResponse("Este video ja foi adicionado.", 409);
+    }
+    return errorResponse("Nao foi possivel adicionar.", 500);
+  }
+
+  const videoId = result?.meta?.last_row_id;
+  const headers = addCorsHeaders(request, {}, env);
+  return jsonResponse(
+    {
+      category,
+      video: {
+        id: videoId,
+        youtube_id: youtubeId,
+        title,
+        embed_url: buildYouTubeEmbedUrl(youtubeId),
+        watch_url: `https://www.youtube.com/watch?v=${youtubeId}`
+      }
+    },
+    200,
+    headers
+  );
+}
+
+async function handleVideoItemDelete(request, env, categoryId, videoId) {
+  const category = getVideoCategoryById(categoryId);
+  if (!category) {
+    return errorResponse("Categoria nao encontrada.", 404);
+  }
+
+  const session = await getSessionUser(request, env);
+  if (!isAdminSession(session)) {
+    return errorResponse("Nao autorizado.", 401);
+  }
+
+  const record = await env.DB.prepare(
+    `SELECT id FROM youtube_videos WHERE id = ? AND category_id = ?`
+  )
+    .bind(videoId, categoryId)
+    .first();
+
+  if (!record) {
+    return errorResponse("Video nao encontrado.", 404);
+  }
+
+  await env.DB.prepare(
+    "DELETE FROM youtube_videos WHERE id = ? AND category_id = ?"
+  )
+    .bind(videoId, categoryId)
+    .run();
+
+  const headers = addCorsHeaders(request, {}, env);
+  return jsonResponse({ ok: true }, 200, headers);
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -734,6 +922,33 @@ export default {
           return errorResponse("Arquivo nao encontrado.", 404);
         }
         return handleAlbumAssetDelete(request, env, albumId, assetId);
+      }
+    }
+
+    if (pathParts[0] === "api" && pathParts[1] === "videos") {
+      if (pathParts.length === 2 && request.method === "GET") {
+        return handleVideoCategoriesList(request, env);
+      }
+
+      const categoryId = pathParts[2];
+      if (!categoryId) {
+        return errorResponse("Categoria nao encontrada.", 404);
+      }
+
+      if (pathParts.length === 4 && pathParts[3] === "items" && request.method === "GET") {
+        return handleVideoItemsList(request, env, categoryId);
+      }
+
+      if (pathParts.length === 4 && pathParts[3] === "items" && request.method === "POST") {
+        return handleVideoItemCreate(request, env, categoryId);
+      }
+
+      if (pathParts.length === 5 && pathParts[3] === "items" && request.method === "DELETE") {
+        const videoId = Number(pathParts[4]);
+        if (!videoId) {
+          return errorResponse("Video nao encontrado.", 404);
+        }
+        return handleVideoItemDelete(request, env, categoryId, videoId);
       }
     }
 

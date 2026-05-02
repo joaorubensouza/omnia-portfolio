@@ -130,6 +130,27 @@ async function getAlbums() {
   return albumsCache;
 }
 
+async function fetchVideoCategories() {
+  const response = await fetch(`${API_BASE}/videos`, {
+    credentials: "include"
+  });
+
+  if (!response.ok) {
+    return [];
+  }
+
+  const data = await response.json().catch(() => ({}));
+  return data.categories || [];
+}
+
+let videoCategoriesCache = null;
+
+async function getVideoCategories() {
+  if (videoCategoriesCache) return videoCategoriesCache;
+  videoCategoriesCache = await fetchVideoCategories();
+  return videoCategoriesCache;
+}
+
 function populateAlbumSelect(albums) {
   const select = document.getElementById("galleryAlbum");
   if (!select) return;
@@ -148,6 +169,24 @@ function populateAlbumSelect(albums) {
       .join("");
 }
 
+function populateVideoCategorySelect(categories) {
+  const select = document.getElementById("youtubeCategory");
+  if (!select) return;
+
+  if (!categories.length) {
+    select.innerHTML = "<option value=\"\">Sem categorias disponiveis</option>";
+    select.disabled = true;
+    return;
+  }
+
+  select.disabled = false;
+  select.innerHTML =
+    "<option value=\"\" disabled selected>Selecione uma categoria</option>" +
+    categories
+      .map((category) => `<option value="${category.id}">${category.label}</option>`)
+      .join("");
+}
+
 function populateAdminAlbumSelect(albums) {
   const select = document.getElementById("adminAlbum");
   if (!select) return;
@@ -163,6 +202,24 @@ function populateAdminAlbumSelect(albums) {
     "<option value=\"\" disabled selected>Selecione um album</option>" +
     albums
       .map((album) => `<option value="${album.id}">${album.label}</option>`)
+      .join("");
+}
+
+function populateAdminVideoCategorySelect(categories) {
+  const select = document.getElementById("adminVideoCategory");
+  if (!select) return;
+
+  if (!categories.length) {
+    select.innerHTML = "<option value=\"\">Sem categorias disponiveis</option>";
+    select.disabled = true;
+    return;
+  }
+
+  select.disabled = false;
+  select.innerHTML =
+    "<option value=\"\" disabled selected>Selecione uma categoria</option>" +
+    categories
+      .map((category) => `<option value="${category.id}">${category.label}</option>`)
       .join("");
 }
 
@@ -319,10 +376,13 @@ async function logout() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  initYouTubeUpload();
+
   fetchMe()
     .then((profile) => {
       if (profile && isAdminProfile(profile)) {
         initAdminGallery();
+        initAdminVideos();
       }
       return fetchDashboard();
     })
@@ -754,6 +814,199 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+function initYouTubeUpload() {
+  const form = document.getElementById("youtubeUploadForm");
+  const urlInput = document.getElementById("youtubeUrl");
+  const titleInput = document.getElementById("youtubeTitle");
+  const categorySelect = document.getElementById("youtubeCategory");
+  const status = document.getElementById("youtubeUploadStatus");
+  const submitBtn = document.getElementById("youtubeUploadBtn");
+
+  if (!form || !urlInput || !categorySelect) return;
+
+  let isSubmitting = false;
+
+  const setStatus = (message) => {
+    if (status) status.textContent = message || "";
+  };
+
+  const syncUi = () => {
+    if (!submitBtn) return;
+    const hasUrl = Boolean(String(urlInput.value || "").trim());
+    const hasCategory = Boolean(categorySelect.value);
+    submitBtn.disabled = isSubmitting || !hasUrl || !hasCategory;
+  };
+
+  getVideoCategories()
+    .then(populateVideoCategorySelect)
+    .catch(() => populateVideoCategorySelect([]));
+
+  urlInput.addEventListener("input", syncUi);
+  categorySelect.addEventListener("change", syncUi);
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (isSubmitting) return;
+    setStatus("");
+
+    const urlValue = String(urlInput.value || "").trim();
+    const categoryId = categorySelect.value;
+    const titleValue = titleInput ? String(titleInput.value || "").trim() : "";
+
+    if (!urlValue) {
+      setStatus("Cole o link do YouTube.");
+      return;
+    }
+
+    if (!categoryId) {
+      setStatus("Selecione uma categoria.");
+      return;
+    }
+
+    isSubmitting = true;
+    syncUi();
+    setStatus("Enviando...");
+
+    const response = await fetch(`${API_BASE}/videos/${categoryId}/items`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url: urlValue, title: titleValue || null })
+    });
+
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      setStatus(data.message || "Nao foi possivel adicionar o video.");
+      isSubmitting = false;
+      syncUi();
+      return;
+    }
+
+    setStatus("Video adicionado com sucesso.");
+    urlInput.value = "";
+    if (titleInput) titleInput.value = "";
+    categorySelect.value = "";
+    isSubmitting = false;
+    syncUi();
+  });
+
+  syncUi();
+}
+
+function initAdminVideos() {
+  const section = document.getElementById("adminVideoSection");
+  const select = document.getElementById("adminVideoCategory");
+  const grid = document.getElementById("adminVideoGrid");
+  const status = document.getElementById("adminVideoStatus");
+  const refreshBtn = document.getElementById("adminVideoRefreshBtn");
+
+  if (!section || !select || !grid) return;
+  section.hidden = false;
+
+  let currentCategoryId = "";
+
+  const setStatus = (message) => {
+    if (status) status.textContent = message || "";
+  };
+
+  const renderList = (videos) => {
+    if (!videos.length) {
+      grid.innerHTML = "<p class=\"admin-gallery-empty\">Nenhum video nesta categoria.</p>";
+      return;
+    }
+
+    grid.innerHTML = videos
+      .map((video) => {
+        const titleText = video.title || `Video ${video.youtube_id}`;
+        const embed = video.embed_url || `https://www.youtube.com/embed/${video.youtube_id}`;
+        return `
+          <article class="admin-video-card" data-id="${video.id}">
+            <div class="admin-video-embed">
+              <iframe
+                src="${embed}"
+                title="${titleText}"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+            <div class="admin-video-meta">
+              <span title="${titleText}">${titleText}</span>
+              <button class="admin-video-delete" type="button" data-id="${video.id}">Remover</button>
+            </div>
+          </article>
+        `;
+      })
+      .join("");
+  };
+
+  const loadVideos = async () => {
+    if (!currentCategoryId) {
+      renderList([]);
+      setStatus("Selecione uma categoria para visualizar.");
+      return;
+    }
+
+    setStatus("Carregando videos...");
+    const response = await fetch(`${API_BASE}/videos/${currentCategoryId}/items`, {
+      credentials: "include"
+    });
+
+    if (!response.ok) {
+      setStatus("Nao foi possivel carregar os videos.");
+      return;
+    }
+
+    const data = await response.json().catch(() => ({}));
+    renderList(data.videos || []);
+    setStatus("");
+  };
+
+  select.addEventListener("change", () => {
+    currentCategoryId = select.value;
+    loadVideos();
+  });
+
+  if (refreshBtn) {
+    refreshBtn.addEventListener("click", () => {
+      loadVideos();
+    });
+  }
+
+  grid.addEventListener("click", async (event) => {
+    const button = event.target.closest(".admin-video-delete");
+    if (!button) return;
+    if (!currentCategoryId) return;
+
+    const videoId = button.dataset.id;
+    if (!videoId) return;
+
+    const ok = window.confirm("Deseja remover este video?");
+    if (!ok) return;
+
+    button.disabled = true;
+    setStatus("Removendo video...");
+
+    const response = await fetch(`${API_BASE}/videos/${currentCategoryId}/items/${videoId}`, {
+      method: "DELETE",
+      credentials: "include"
+    });
+
+    if (!response.ok) {
+      button.disabled = false;
+      setStatus("Nao foi possivel remover o video.");
+      return;
+    }
+
+    const card = button.closest(".admin-video-card");
+    if (card) card.remove();
+    setStatus("Video removido.");
+  });
+
+  getVideoCategories()
+    .then(populateAdminVideoCategorySelect)
+    .catch(() => populateAdminVideoCategorySelect([]));
+}
 
 function initAdminGallery() {
   const adminSection = document.getElementById("adminGallerySection");

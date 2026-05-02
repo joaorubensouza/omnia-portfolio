@@ -74,3 +74,20 @@ CREATE TABLE IF NOT EXISTS album_assets (
 
 CREATE INDEX IF NOT EXISTS idx_album_assets_album
   ON album_assets (album_id, created_at);
+
+CREATE TABLE IF NOT EXISTS youtube_videos (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  category_id TEXT NOT NULL,
+  youtube_id TEXT NOT NULL,
+  original_url TEXT NOT NULL,
+  title TEXT,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_youtube_videos_category
+  ON youtube_videos (category_id, created_at);
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_youtube_videos_unique
+  ON youtube_videos (category_id, youtube_id);
