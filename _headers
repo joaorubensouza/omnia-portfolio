@@ -1,5 +1,7 @@
 /script.js
   Cache-Control: public, max-age=0, must-revalidate
+  X-Omnia-Headers: enabled
 
 /style.css
   Cache-Control: public, max-age=0, must-revalidate
+  X-Omnia-Headers: enabled
