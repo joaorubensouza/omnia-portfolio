@@ -254,7 +254,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const url = String(value || "").trim();
           if (!url) return "";
           if (url.startsWith("/") || url.startsWith("//") || url.includes("://")) return url;
-          return `/${url.replace(/^\\/+/, "")}`;
+          return `/${url.replace(/^\/+/, "")}`;
         };
 
         cards.forEach((card) => {
