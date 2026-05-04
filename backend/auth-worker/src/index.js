@@ -18,6 +18,7 @@ const VIDEO_CATEGORIES = [
 
 const MAX_UPLOAD_FILES = 50;
 const MAX_UPLOAD_BYTES = 12 * 1024 * 1024;
+const MAX_CARD_MEDIA_BYTES = 80 * 1024 * 1024;
 const ADMIN_EMAIL = "jvdiamond97";
 
 function jsonResponse(data, status = 200, headers = {}) {
@@ -914,6 +915,193 @@ function normalizeMediaUrl(value) {
   return url.slice(0, 500);
 }
 
+function buildCardMediaKey(area, cardId) {
+  return `cards/${area}/${cardId}/media`;
+}
+
+function parseByteRange(rangeHeader, size) {
+  if (!rangeHeader) return null;
+  const value = String(rangeHeader).trim();
+  const match = /^bytes=(\d*)-(\d*)$/.exec(value);
+  if (!match) return null;
+
+  const startRaw = match[1];
+  const endRaw = match[2];
+
+  const start =
+    startRaw === "" ? null : Number.parseInt(startRaw, 10);
+  const end =
+    endRaw === "" ? null : Number.parseInt(endRaw, 10);
+
+  if (start == null && end == null) return null;
+  if ((start != null && Number.isNaN(start)) || (end != null && Number.isNaN(end))) return null;
+  if (size == null || Number.isNaN(size) || size <= 0) return null;
+
+  if (start == null) {
+    // suffix bytes: bytes=-500
+    const suffix = end;
+    if (suffix == null || suffix <= 0) return null;
+    const startPos = Math.max(size - suffix, 0);
+    return { start: startPos, end: size - 1, length: size - startPos };
+  }
+
+  const startPos = Math.max(start, 0);
+  const endPos = end == null ? size - 1 : Math.min(end, size - 1);
+  if (startPos > endPos) return null;
+  return { start: startPos, end: endPos, length: endPos - startPos + 1 };
+}
+
+async function handleSiteCardMediaUpload(request, env) {
+  const session = await getSessionUser(request, env);
+  if (!isAdminSession(session)) {
+    return errorResponse("Nao autorizado.", 401);
+  }
+
+  if (!env.ALBUMS_BUCKET) {
+    return errorResponse("Storage indisponivel.", 500);
+  }
+
+  const formData = await request.formData().catch(() => null);
+  if (!formData) {
+    return errorResponse("Formulario invalido.", 400);
+  }
+
+  const area = normalizeSiteCardKey(formData.get("area"));
+  const cardId = normalizeSiteCardKey(formData.get("card_id"));
+  const file = formData.get("file");
+
+  if (!area || !cardId) {
+    return errorResponse("Dados incompletos.", 400);
+  }
+
+  if (!file || typeof file.size !== "number" || !file.size) {
+    return errorResponse("Envie um arquivo.", 400);
+  }
+
+  const contentType = String(file.type || "");
+  const isImage = contentType.startsWith("image/");
+  const isMp4 = contentType === "video/mp4" || String(file.name || "").toLowerCase().endsWith(".mp4");
+  if (!isImage && !isMp4) {
+    return errorResponse("Envie uma imagem ou um video MP4.", 400);
+  }
+
+  if (file.size > MAX_CARD_MEDIA_BYTES) {
+    return errorResponse("Arquivo muito grande.", 400);
+  }
+
+  // Keep a stable key; cache-busting happens through the version query string.
+  const objectKey = buildCardMediaKey(area, cardId);
+
+  let stored;
+  try {
+    stored = await env.ALBUMS_BUCKET.put(objectKey, file.stream(), {
+      httpMetadata: {
+        contentType: contentType || (isMp4 ? "video/mp4" : "application/octet-stream")
+      }
+    });
+  } catch (err) {
+    return errorResponse("Nao foi possivel enviar o arquivo.", 500);
+  }
+
+  const version = stored?.version || String(Date.now());
+  const mediaUrl = `/api/site-cards/media/${area}/${cardId}?v=${encodeURIComponent(version)}`;
+  const headers = addCorsHeaders(request, {}, env);
+  return jsonResponse({ ok: true, media_url: mediaUrl }, 200, headers);
+}
+
+async function handleSiteCardMediaFetch(request, env, area, cardId) {
+  if (!env.ALBUMS_BUCKET) {
+    return errorResponse("Storage indisponivel.", 500);
+  }
+
+  const safeArea = normalizeSiteCardKey(area);
+  const safeCardId = normalizeSiteCardKey(cardId);
+  if (!safeArea || !safeCardId) {
+    return errorResponse("Nao encontrado.", 404);
+  }
+
+  const objectKey = buildCardMediaKey(safeArea, safeCardId);
+  const head = await env.ALBUMS_BUCKET.head(objectKey);
+  if (!head) {
+    return errorResponse("Arquivo nao encontrado.", 404);
+  }
+
+  const headers = addCorsHeaders(request, {}, env);
+  const contentType =
+    head.httpMetadata?.contentType || "application/octet-stream";
+
+  headers["Content-Type"] = contentType;
+  headers["Accept-Ranges"] = "bytes";
+  headers["ETag"] = head.httpEtag;
+  headers["Cache-Control"] = "public, max-age=31536000, immutable";
+
+  const rangeHeader = request.headers.get("Range");
+  if (rangeHeader) {
+    const range = parseByteRange(rangeHeader, head.size);
+    if (!range) {
+      headers["Content-Range"] = `bytes */${head.size}`;
+      return new Response(null, { status: 416, headers });
+    }
+
+    const object = await env.ALBUMS_BUCKET.get(objectKey, {
+      range: { offset: range.start, length: range.length }
+    });
+
+    if (!object || !object.body) {
+      return errorResponse("Arquivo nao encontrado.", 404);
+    }
+
+    headers["Content-Range"] = `bytes ${range.start}-${range.end}/${head.size}`;
+    headers["Content-Length"] = String(range.length);
+    return new Response(object.body, { status: 206, headers });
+  }
+
+  const object = await env.ALBUMS_BUCKET.get(objectKey);
+  if (!object || !object.body) {
+    return errorResponse("Arquivo nao encontrado.", 404);
+  }
+
+  headers["Content-Length"] = String(head.size);
+  return new Response(object.body, { status: 200, headers });
+}
+
+async function handleAdminUserRoleUpdate(request, env) {
+  const session = await getSessionUser(request, env);
+  if (!session || !matchesAdminEmail(session.email)) {
+    return errorResponse("Nao autorizado.", 401);
+  }
+
+  const body = await request.json().catch(() => null);
+  if (!body || !body.email || !body.role) {
+    return errorResponse("Dados incompletos.", 400);
+  }
+
+  const email = String(body.email).toLowerCase().trim();
+  const role = String(body.role).toLowerCase().trim();
+  if (!email) {
+    return errorResponse("Dados incompletos.", 400);
+  }
+
+  const allowed = new Set(["admin", "client"]);
+  if (!allowed.has(role)) {
+    return errorResponse("Role invalida.", 400);
+  }
+
+  const existing = await env.DB.prepare("SELECT id FROM users WHERE email = ?")
+    .bind(email)
+    .first();
+  if (!existing) {
+    return errorResponse("Usuario nao encontrado.", 404);
+  }
+
+  await env.DB.prepare("UPDATE users SET role = ? WHERE email = ?")
+    .bind(role, email)
+    .run();
+
+  const headers = addCorsHeaders(request, {}, env);
+  return jsonResponse({ ok: true }, 200, headers);
+}
+
 async function handleSiteCardUpsert(request, env) {
   const session = await getSessionUser(request, env);
   if (!isAdminSession(session)) {
@@ -1030,6 +1218,14 @@ export default {
     }
 
     if (pathParts[0] === "api" && pathParts[1] === "site-cards") {
+      if (pathParts.length === 3 && pathParts[2] === "media" && request.method === "POST") {
+        return handleSiteCardMediaUpload(request, env);
+      }
+
+      if (pathParts.length === 5 && pathParts[2] === "media" && request.method === "GET") {
+        return handleSiteCardMediaFetch(request, env, pathParts[3], pathParts[4]);
+      }
+
       if (pathParts.length === 2 && request.method === "GET") {
         return handleSiteCardsList(request, env);
       }
@@ -1057,6 +1253,10 @@ export default {
 
     if (url.pathname === "/api/admin/users" && request.method === "POST") {
       return handleAdminCreateUser(request, env);
+    }
+
+    if (url.pathname === "/api/admin/user-role" && request.method === "POST") {
+      return handleAdminUserRoleUpdate(request, env);
     }
 
     if (url.pathname === "/api/admin/cards" && request.method === "POST") {

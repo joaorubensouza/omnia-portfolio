@@ -176,6 +176,29 @@ async function saveSiteCard(payload) {
   return { ok: response.ok, data };
 }
 
+async function uploadSiteCardMedia(formData) {
+  const response = await fetch(`${API_BASE}/site-cards/media`, {
+    method: "POST",
+    credentials: "include",
+    body: formData
+  });
+
+  const data = await response.json().catch(() => ({}));
+  return { ok: response.ok, data };
+}
+
+async function updateUserRole(payload) {
+  const response = await fetch(`${API_BASE}/admin/user-role`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+
+  const data = await response.json().catch(() => ({}));
+  return { ok: response.ok, data };
+}
+
 function populateAlbumSelect(albums) {
   const select = document.getElementById("galleryAlbum");
   if (!select) return;
@@ -330,6 +353,14 @@ function isAdminProfile(profile) {
   return role === "admin" || email === admin || local === admin;
 }
 
+function isMasterProfile(profile) {
+  if (!profile) return false;
+  const email = String(profile.email || "").toLowerCase();
+  const local = email.split("@")[0];
+  const admin = ADMIN_EMAIL.toLowerCase();
+  return email === admin || local === admin;
+}
+
 let calendarState = {
   items: [],
   view: "month",
@@ -482,6 +513,9 @@ document.addEventListener("DOMContentLoaded", () => {
         initAdminGallery();
         initAdminVideos();
         initAdminCardLabels();
+        if (isMasterProfile(profile)) {
+          initAdminUsers();
+        }
       }
       return fetchDashboard();
     })
@@ -1211,6 +1245,113 @@ function initAdminCardLabels() {
     previewNode.play().catch(() => {});
   };
 
+  const buildMediaUploader = ({ area, cardId, def, saved, previewMedia }) => {
+    const field = document.createElement("div");
+    field.className = "dashboard-upload-field admin-cardlabels-media";
+
+    const label = document.createElement("label");
+    label.textContent = area === "fotografia" ? "Midia (Foto)" : "Midia (Video MP4)";
+    field.appendChild(label);
+
+    const urlInput = document.createElement("input");
+    urlInput.type = "text";
+    urlInput.className = "admin-card-media";
+    urlInput.maxLength = 500;
+    urlInput.value = saved.media_url ? String(saved.media_url) : "";
+    urlInput.placeholder = def.defaultMedia || "/img/...";
+    urlInput.readOnly = true;
+    urlInput.hidden = true;
+    field.appendChild(urlInput);
+
+    const dropzone = document.createElement("div");
+    dropzone.className = "dashboard-dropzone admin-cardmedia-dropzone";
+    dropzone.tabIndex = 0;
+    dropzone.setAttribute("role", "button");
+    dropzone.setAttribute("aria-label", `Enviar midia para ${def.label}`);
+
+    const content = document.createElement("div");
+    content.className = "dropzone-content";
+    content.innerHTML = `
+      <strong>Arraste e solte o arquivo</strong>
+      <span>ou clique para selecionar</span>
+    `;
+
+    const meta = document.createElement("div");
+    meta.className = "dropzone-meta";
+    meta.textContent = urlInput.value ? "Arquivo configurado." : "Nenhum arquivo selecionado";
+
+    dropzone.appendChild(content);
+    dropzone.appendChild(meta);
+    field.appendChild(dropzone);
+
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = area === "fotografia" ? "image/*" : "video/mp4";
+    fileInput.className = "admin-card-media-file";
+    fileInput.hidden = true;
+    field.appendChild(fileInput);
+
+    const pickFile = () => fileInput.click();
+
+    const handleFile = async (file) => {
+      if (!file) return;
+      meta.textContent = `Enviando: ${file.name}...`;
+      dropzone.classList.remove("is-drag");
+
+      const formData = new FormData();
+      formData.append("area", area);
+      formData.append("card_id", cardId);
+      formData.append("file", file);
+
+      const result = await uploadSiteCardMedia(formData);
+      if (!result.ok) {
+        meta.textContent = result.data.message || "Nao foi possivel enviar.";
+        return;
+      }
+
+      const mediaUrl = String(result.data.media_url || "").trim();
+      if (!mediaUrl) {
+        meta.textContent = "Upload concluido, mas sem URL.";
+        return;
+      }
+
+      urlInput.value = mediaUrl;
+      meta.textContent = "Upload concluido. Salve as alteracoes.";
+      updatePreview(previewMedia, area, mediaUrl);
+    };
+
+    dropzone.addEventListener("click", pickFile);
+    dropzone.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        pickFile();
+      }
+    });
+
+    dropzone.addEventListener("dragover", (event) => {
+      event.preventDefault();
+      dropzone.classList.add("is-drag");
+    });
+
+    dropzone.addEventListener("dragleave", () => {
+      dropzone.classList.remove("is-drag");
+    });
+
+    dropzone.addEventListener("drop", (event) => {
+      event.preventDefault();
+      dropzone.classList.remove("is-drag");
+      const dropped = Array.from(event.dataTransfer.files || []);
+      handleFile(dropped[0]);
+    });
+
+    fileInput.addEventListener("change", (event) => {
+      const file = (event.target.files || [])[0];
+      handleFile(file);
+    });
+
+    return { field, urlInput };
+  };
+
   const render = () => {
     const area = areaSelect.value || "fotografia";
     const defs = CARD_DEFS[area] || [];
@@ -1298,19 +1439,16 @@ function initAdminCardLabels() {
 
       item.appendChild(fields);
 
-      const { field: mediaField, input: mediaInput } = buildField("Midia (URL)");
-      mediaInput.className = "admin-card-media";
-      mediaInput.maxLength = 500;
-      mediaInput.value = saved.media_url ? String(saved.media_url) : "";
-      mediaInput.placeholder = def.defaultMedia || "/img/...";
-      mediaInput.inputMode = "url";
-      mediaField.classList.add("admin-cardlabels-media");
-      item.appendChild(mediaField);
-
-      mediaInput.addEventListener("input", () => {
-        const value = resolveMediaValue(mediaInput.value, def.defaultMedia);
-        updatePreview(previewMedia, area, value);
+      const mediaUpload = buildMediaUploader({
+        area,
+        cardId: def.card_id,
+        def,
+        saved,
+        previewMedia
       });
+      if (mediaUpload?.field) {
+        item.appendChild(mediaUpload.field);
+      }
 
       grid.appendChild(item);
     });
@@ -1378,6 +1516,43 @@ function initAdminCardLabels() {
   });
 
   loadCards();
+}
+
+function initAdminUsers() {
+  const section = document.getElementById("adminUsersSection");
+  const form = document.getElementById("adminUsersForm");
+  const emailInput = document.getElementById("adminUsersEmail");
+  const roleSelect = document.getElementById("adminUsersRole");
+  const status = document.getElementById("adminUsersStatus");
+
+  if (!section || !form || !emailInput || !roleSelect) return;
+  section.hidden = false;
+
+  const setStatus = (message) => {
+    if (status) status.textContent = message || "";
+  };
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    setStatus("");
+
+    const email = String(emailInput.value || "").trim().toLowerCase();
+    const role = String(roleSelect.value || "").trim().toLowerCase();
+    if (!email) {
+      setStatus("Informe o email do usuario.");
+      return;
+    }
+
+    setStatus("Salvando permissao...");
+    const result = await updateUserRole({ email, role });
+    if (!result.ok) {
+      setStatus(result.data.message || "Nao foi possivel salvar.");
+      return;
+    }
+
+    setStatus("Permissao atualizada.");
+    emailInput.value = "";
+  });
 }
 
 function initAdminGallery() {

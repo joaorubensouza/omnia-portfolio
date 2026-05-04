@@ -180,6 +180,34 @@
       </form>
     </section>
 
+    <section class="dashboard-admin" id="adminUsersSection" hidden>
+      <div class="dashboard-upload-header">
+        <h2>Permissoes de usuarios (Admin)</h2>
+        <p>Conceda ou remova permissao de admin por email.</p>
+      </div>
+
+      <form class="dashboard-upload-form" id="adminUsersForm">
+        <div class="dashboard-admin-controls">
+          <div class="dashboard-upload-field">
+            <label for="adminUsersEmail">Email do usuario</label>
+            <input id="adminUsersEmail" type="text" inputmode="email" placeholder="email@exemplo.com" required>
+          </div>
+
+          <div class="dashboard-upload-field">
+            <label for="adminUsersRole">Permissao</label>
+            <select id="adminUsersRole">
+              <option value="admin">Admin</option>
+              <option value="client">Cliente</option>
+            </select>
+          </div>
+
+          <button class="dashboard-upload-btn" type="submit">Salvar permissao</button>
+        </div>
+
+        <p class="dashboard-upload-status" id="adminUsersStatus" aria-live="polite"></p>
+      </form>
+    </section>
+
     <section class="dashboard-calendar">
       <aside class="calendar-sidebar">
         <div class="calendar-sidebar-header">
