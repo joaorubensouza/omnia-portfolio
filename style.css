@@ -4119,6 +4119,11 @@ h1, h2, h3, h4 {
   gap: 24px;
 }
 
+.testimonials-grid {
+  max-width: 760px;
+  margin-inline: auto;
+}
+
 .process-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -4162,7 +4167,7 @@ h1, h2, h3, h4 {
 }
 
 .testimonial-logo {
-  width: 96px;
+  width: 132px;
   height: 96px;
   border-radius: 16px;
   border: 1px solid rgba(255,255,255,0.12);
@@ -4183,33 +4188,27 @@ h1, h2, h3, h4 {
   display: block;
 }
 
-.testimonial-logo.logo-sony,
-.testimonial-logo.logo-universal,
-.testimonial-logo.logo-nepster {
+.testimonial-logo.logo-tps,
+.testimonial-logo.logo-terceirasegur {
   padding: 0;
   background: #000;
 }
 
-.testimonial-logo.logo-sony img,
-.testimonial-logo.logo-universal img,
-.testimonial-logo.logo-nepster img {
+.testimonial-logo.logo-tps img,
+.testimonial-logo.logo-terceirasegur img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
   transform-origin: center;
 }
 
-.testimonial-logo.logo-sony img {
-  transform: scale(0.5);
+.testimonial-logo.logo-tps img {
+  transform: scale(0.9);
 }
 
-.testimonial-logo.logo-universal img {
-  transform: scale(0.5);
-}
-
-.testimonial-logo.logo-nepster img {
-  transform: scale(1.0);
+.testimonial-logo.logo-terceirasegur img {
+  transform: scale(0.95);
 }
 
 .testimonial-author span {
@@ -6413,8 +6412,6 @@ body.camera-cursor {
 .player-toggle.is-playing::before {
   background-image: var(--player-pause-icon);
 }
-
-
 
 
 
