@@ -430,7 +430,7 @@ if (contactForm) {
 
     try {
       const response = await fetch(
-        "https://formspree.io/f/xreebyrq",
+        "https://formspree.io/f/mlgzopdn",
         {
           method: "POST",
           body: formData,
