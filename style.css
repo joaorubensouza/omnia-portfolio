@@ -3116,10 +3116,9 @@ button {
 .srea {
   width: 100%;
   max-width: 350px;      /* controla largura */
-  margin: 40px auto 0;   /* centraliza */
+  margin: -10px auto 28px;   /* centraliza */
   border-radius: 24px;
   overflow: hidden;      /* corta bordas */
-  margin-top: -10px;
 }
 
 /* Vídeo em si */
@@ -6412,7 +6411,6 @@ body.camera-cursor {
 .player-toggle.is-playing::before {
   background-image: var(--player-pause-icon);
 }
-
 
 
 
